@@ -1,0 +1,11 @@
+/* Node-side code: connectors and the data build CLI. Never bundled into the app. */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true
+  },
+  "include": ["shared/**/*.ts", "sources/**/*.ts", "tools/**/*.ts"]
+}

@@ -6,7 +6,7 @@ export const LOCALES = ['en', 'bg'] as const;
 export type Locale = (typeof LOCALES)[number];
 
 const CATALOGUES: Record<Locale, Record<string, string>> = { en, bg };
-const STORAGE_KEY = 'drone-zones.locale';
+const STORAGE_KEY = 'avio.locale';
 
 function initialLocale(): Locale {
   const stored = globalThis.localStorage?.getItem(STORAGE_KEY);

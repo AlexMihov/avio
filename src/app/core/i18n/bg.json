@@ -1,7 +1,6 @@
 {
-  "app.title": "Зони за дронове",
+  "app.title": "Avio",
   "app.subtitle": "Официалните географски зони за БЛС, четими за всеки",
-
   "query.height": "Височина на полета",
   "query.heightHint": "метра над земната повърхност",
   "query.locate": "Моето местоположение",
@@ -10,7 +9,6 @@
   "query.coordsPlaceholder": "42.6977, 23.3219",
   "query.go": "Провери",
   "query.hint": "Щракнете върху картата, поставете координати или използвайте местоположението си.",
-
   "verdict.PROHIBITED": "Полетите са забранени",
   "verdict.REQ_AUTHORISATION": "Изисква се разрешение",
   "verdict.CONDITIONAL": "Прилагат се условия",
@@ -19,7 +17,6 @@
   "verdict.zonesApply": "{count} зона важи тук",
   "verdict.zonesApplyPlural": "{count} зони важат тук",
   "verdict.at": "на {height} м AGL",
-
   "strip.zone": "Зона",
   "strip.status": "Статус",
   "strip.limits": "Вертикални граници",
@@ -33,11 +30,9 @@
   "strip.noText": "Органът не публикува текст за тази зона.",
   "strip.temporary": "Активна от {start} до {end}",
   "strip.ground": "ЗЕМ",
-
   "ladder.title": "Вертикален профил",
   "ladder.you": "Вие",
   "ladder.free": "Без ограничение",
-
   "reason.SENSITIVE": "Чувствителен обект",
   "reason.PRIVACY": "Лични данни",
   "reason.AIR_TRAFFIC": "Въздушно движение",
@@ -45,14 +40,12 @@
   "reason.FOREIGN_TERRITORY": "Чужда територия",
   "reason.EMERGENCY": "Извънредна ситуация",
   "reason.OTHER": "Друго",
-
   "source.label": "Държава",
   "source.published": "Данни, публикувани на {date}",
   "source.official": "Официален източник",
   "source.stale": "Това копие е обновено преди {days} дни и може да не е актуално. Проверете официалната публикация.",
   "source.error": "Данните за зоните не могат да бъдат заредени. {message}",
   "source.loading": "Зареждане на зоните…",
-
   "legend.title": "Легенда",
   "disclaimer": "Неофициален инструмент. Винаги проверявайте официалната публикация преди полет.",
   "locale.switch": "Language"

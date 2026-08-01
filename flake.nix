@@ -1,5 +1,5 @@
 {
-  description = "drone-zones development shell";
+  description = "avio development shell";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 

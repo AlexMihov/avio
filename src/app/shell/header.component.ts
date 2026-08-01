@@ -10,8 +10,11 @@ import { ZonesService } from '../core/zones.service';
   template: `
     <header>
       <div class="brand">
-        <h1>{{ i18n.t('app.title') }}</h1>
-        <p>{{ i18n.t('app.subtitle') }}</p>
+        <img src="logo.svg" alt="" width="34" height="34" />
+        <div>
+          <h1>{{ i18n.t('app.title') }}</h1>
+          <p>{{ i18n.t('app.subtitle') }}</p>
+        </div>
       </div>
 
       <div class="controls">
@@ -110,6 +113,11 @@ import { ZonesService } from '../core/zones.service';
       padding: 0.75rem 1.1rem 0.7rem;
       border-bottom: 1px solid var(--rule);
       background: var(--paper-2);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
     }
     h1 {
       margin: 0;

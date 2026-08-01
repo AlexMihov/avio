@@ -1,7 +1,6 @@
 {
-  "app.title": "Drone Zones",
+  "app.title": "Avio",
   "app.subtitle": "Official UAS geographical zones, read by anyone",
-
   "query.height": "Flight height",
   "query.heightHint": "metres above ground",
   "query.locate": "Use my location",
@@ -10,7 +9,6 @@
   "query.coordsPlaceholder": "42.6977, 23.3219",
   "query.go": "Check",
   "query.hint": "Click the map, paste coordinates, or use your location.",
-
   "verdict.PROHIBITED": "Flying prohibited",
   "verdict.REQ_AUTHORISATION": "Authorisation required",
   "verdict.CONDITIONAL": "Conditions apply",
@@ -19,7 +17,6 @@
   "verdict.zonesApply": "{count} zone applies here",
   "verdict.zonesApplyPlural": "{count} zones apply here",
   "verdict.at": "at {height} m AGL",
-
   "strip.zone": "Zone",
   "strip.status": "Status",
   "strip.limits": "Vertical limits",
@@ -33,11 +30,9 @@
   "strip.noText": "The authority publishes no text for this zone.",
   "strip.temporary": "Active {start} to {end}",
   "strip.ground": "GND",
-
   "ladder.title": "Vertical profile",
   "ladder.you": "You",
   "ladder.free": "Unrestricted",
-
   "reason.SENSITIVE": "Sensitive site",
   "reason.PRIVACY": "Privacy",
   "reason.AIR_TRAFFIC": "Air traffic",
@@ -45,14 +40,12 @@
   "reason.FOREIGN_TERRITORY": "Foreign territory",
   "reason.EMERGENCY": "Emergency",
   "reason.OTHER": "Other",
-
   "source.label": "Country",
   "source.published": "Data published {date}",
   "source.official": "Official source",
   "source.stale": "This mirror was last refreshed {days} days ago and may be out of date. Check the official publication.",
   "source.error": "Could not load zone data. {message}",
   "source.loading": "Loading zones…",
-
   "legend.title": "Legend",
   "disclaimer": "Unofficial tool. Always verify against the official publication before flying.",
   "locale.switch": "Език"

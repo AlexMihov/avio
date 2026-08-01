@@ -6,7 +6,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "drone-zones": {
+    "avio": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -60,10 +60,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "drone-zones:build:production"
+              "buildTarget": "avio:build:production"
             },
             "development": {
-              "buildTarget": "drone-zones:build:development"
+              "buildTarget": "avio:build:development"
             }
           },
           "defaultConfiguration": "development"

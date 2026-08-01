@@ -1,0 +1,11 @@
+{
+  "enabledSources": ["bulgaria"],
+  "defaultSource": "bulgaria",
+  "map": {
+    "tileUrl": "https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+    "attribution": "&copy; OpenStreetMap contributors &copy; CARTO",
+    "maxZoom": 19
+  },
+  "defaultHeightM": 120,
+  "staleAfterDays": 7
+}

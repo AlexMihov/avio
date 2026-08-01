@@ -1,0 +1,45 @@
+name: Refresh zone data
+
+on:
+  schedule:
+    # Daily, shortly after the authority's usual working hours.
+    - cron: '17 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      # Fails loudly and commits nothing if the page cannot be parsed, the download
+      # breaks, or the zone count moves by more than 20%.
+      - run: npm run data
+
+      - run: npm test
+
+      - name: Commit refreshed data
+        run: |
+          if git diff --quiet -- public/data; then
+            echo "No change in published zones."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/data
+          git commit -m "data: refresh zones ($(date -u +%Y-%m-%d))"
+          git push

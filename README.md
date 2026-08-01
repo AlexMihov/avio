@@ -1,59 +1,78 @@
-# DroneZones
+# Drone Zones
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.2.
+Official UAS geographical zones on a map you can actually use. Pick a point, enter the
+height you intend to fly at, and see every zone that applies — with the authority's own
+text, the vertical limits, and who to contact for permission.
 
-## Development server
+Bulgaria is the first source, because the Civil Aviation Administration publishes the data
+as an ED-269 JSON file but offers no usable public map.
 
-To start a local development server, run:
+**This is an unofficial tool. Always verify against the official publication before flying.**
 
-```bash
-ng serve
+## How it works
+
+There is no backend. A scheduled GitHub Action fetches each authority's file, normalizes it
+and commits the result as static JSON; the browser loads that file and does every
+containment and altitude calculation locally.
+
+```
+GitHub Action (daily)                     Browser
+  sources/<id>/fetch.ts      ─┐
+  sources/<id>/normalize.ts   ├─► public/data/<id>/zones.json ──► map + query
+  tools/build-data.ts        ─┘                      meta.json ──► freshness banner
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Fetching happens in CI rather than in the browser because authority sites generally send no
+CORS headers, publish zips rather than JSON, and put the release date in the file name.
 
-## Code scaffolding
+## Running it locally
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Requires Node 24 (Angular 22 needs ≥ 22.22.3). On NixOS, `nix develop` provides it.
 
 ```bash
-ng generate --help
+npm ci
+npm run data     # fetch and normalize the enabled sources
+npx ng serve     # http://localhost:4200
+npm test         # normalizer, geometry, query, config and permalink tests
 ```
 
-## Building
+## Configuration
 
-To build the project run:
+`config/app.config.json` is loaded at runtime, so anyone hosting this can change it without
+rebuilding:
 
-```bash
-ng build
+```json
+{
+  "enabledSources": ["bulgaria"],
+  "defaultSource": "bulgaria",
+  "map": { "tileUrl": "...", "attribution": "...", "maxZoom": 19 },
+  "defaultHeightM": 120,
+  "staleAfterDays": 7
+}
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+`tools/build-data.ts` reads the same file, so enabling a source turns on both its data build
+and its entry in the UI.
 
-## Running unit tests
+## Self-hosting
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Fork, enable GitHub Pages with "GitHub Actions" as the source, and push. The deploy workflow
+builds and publishes; the refresh workflow keeps `public/data` up to date and commits only
+when the authority actually changes something.
 
-```bash
-ng test
-```
+## Adding a country
 
-## Running end-to-end tests
+See [docs/adding-a-source.md](docs/adding-a-source.md). A source is one directory with a
+manifest, a fetcher, a normalizer and a fixture-backed test — no changes to the app itself.
 
-For end-to-end (e2e) testing, run:
+## Sharing a query
 
-```bash
-ng e2e
-```
+The address bar always reflects the current query: `?at=42.6977,23.3219&h=50`.
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Data and attribution
 
-## Additional Resources
+Bulgaria: ГД "Гражданска въздухоплавателна администрация" —
+[UAS geographical zones](https://www.caa.bg/bg/category/633/7062). Zone texts are shown in
+the original Bulgarian, which is authoritative; English is an unofficial translation.
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Basemap © OpenStreetMap contributors, © CARTO.

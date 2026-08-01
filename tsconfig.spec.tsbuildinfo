@@ -1,1 +1,1 @@
-{"root":["./src/app/app.spec.ts","./shared/zone.ts"],"version":"6.0.3"}
+{"root":["./src/app/core/config.service.spec.ts","./src/app/core/permalink.spec.ts","./src/app/core/geo/geometry.spec.ts","./src/app/core/geo/query.spec.ts","./shared/source.ts","./shared/zone.ts"],"version":"6.0.3"}

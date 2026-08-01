@@ -132,11 +132,13 @@ import { ZonesService } from '../core/zones.service';
     .field {
       display: grid;
       gap: 0.15rem;
+      min-width: 0;
     }
     .input-row {
       display: flex;
       align-items: stretch;
       gap: 0.3rem;
+      min-width: 0;
     }
     input,
     select {
@@ -190,6 +192,7 @@ import { ZonesService } from '../core/zones.service';
     .ribbon {
       display: flex;
       flex-wrap: wrap;
+      overflow-wrap: anywhere;
       gap: 0.35rem 1rem;
       align-items: baseline;
       padding: 0.3rem 1.1rem;
@@ -218,9 +221,25 @@ import { ZonesService } from '../core/zones.service';
     @media (max-width: 720px) {
       header {
         padding: 0.6rem 0.8rem;
+        gap: 0.6rem;
       }
       .brand p {
         display: none;
+      }
+      .controls {
+        width: 100%;
+        gap: 0.5rem 0.6rem;
+      }
+      .field.coords {
+        flex: 1 1 100%;
+      }
+      .coords input {
+        flex: 1;
+        width: auto;
+        min-width: 0;
+      }
+      .locate {
+        flex: 1;
       }
     }
   `,

@@ -75,7 +75,18 @@ aside {
 @media (max-width: 860px) {
   main {
     grid-template-columns: 1fr;
-    grid-template-rows: 45dvh 1fr;
+    grid-template-rows: 42dvh 1fr;
+  }
+
+  /* Space is scarce; the legend becomes one compact row of swatches. */
+  .legend ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem 0.9rem;
+  }
+
+  .legend > .compartment-label {
+    display: none;
   }
 
   aside {

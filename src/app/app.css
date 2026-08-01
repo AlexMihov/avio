@@ -1,0 +1,90 @@
+:host {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+main {
+  display: grid;
+  grid-template-columns: var(--panel-w) 1fr;
+  min-height: 0;
+}
+
+main > dz-map {
+  min-height: 0;
+}
+
+aside {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  border-right: 1px solid var(--rule);
+  overflow: hidden;
+  background: var(--paper);
+}
+
+.results {
+  overflow-y: auto;
+  padding: 0.9rem 1rem 1rem;
+}
+
+.legend {
+  border-top: 1px solid var(--rule);
+  background: var(--paper-2);
+  padding: 0.5rem 1rem 0.6rem;
+}
+
+.legend ul {
+  list-style: none;
+  margin: 0.25rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.2rem;
+  font-size: 0.76rem;
+  color: var(--ink-2);
+}
+
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.legend li::before {
+  content: '';
+  width: 1.1rem;
+  height: 0.55rem;
+  border: 1.5px solid var(--edge);
+  background: color-mix(in srgb, var(--edge) 18%, transparent);
+}
+
+.legend li[data-restriction='PROHIBITED'] {
+  --edge: var(--prohibited);
+}
+.legend li[data-restriction='REQ_AUTHORISATION'] {
+  --edge: var(--authorisation);
+}
+.legend li[data-restriction='CONDITIONAL'] {
+  --edge: var(--conditional);
+}
+
+.legend li[data-restriction='CONDITIONAL']::before {
+  border-style: dashed;
+}
+
+@media (max-width: 860px) {
+  main {
+    grid-template-columns: 1fr;
+    grid-template-rows: 45dvh 1fr;
+  }
+
+  aside {
+    order: 2;
+    border-right: none;
+    border-top: 1px solid var(--rule);
+  }
+
+  dz-map {
+    order: 1;
+  }
+}

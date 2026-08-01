@@ -22,6 +22,11 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "app.config.json",
+                "input": "config",
+                "output": "config"
               }
             ],
             "styles": ["src/styles.css"]

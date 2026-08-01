@@ -1,1 +1,89 @@
-/* You can add global styles to this file, and also import other style files */
+@import '@fontsource-variable/archivo';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+@import '@fontsource/ibm-plex-mono/600.css';
+@import 'leaflet/dist/leaflet.css';
+
+:root {
+  /* Aeronautical chart palette: paper, ink, and the three restriction inks. */
+  --paper: #edefec;
+  --paper-2: #f7f8f6;
+  --ink: #14181c;
+  --ink-2: #4a5560;
+  --ink-3: #77828c;
+  --rule: #c9cfd1;
+
+  --prohibited: #b31b4b;
+  --authorisation: #1b6ca8;
+  --conditional: #b07d18;
+  --clear: #2f7d5b;
+
+  --font-ui: 'Archivo Variable', 'Archivo', system-ui, sans-serif;
+  --font-data: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --panel-w: 27rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+app-root {
+  display: block;
+  height: 100%;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.45;
+  -webkit-text-size-adjust: 100%;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+:where(a) {
+  color: var(--authorisation);
+  text-underline-offset: 2px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+/* Compartment heading on the flight strips and in the header. */
+.compartment-label {
+  font-family: var(--font-ui);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.data {
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

@@ -1,0 +1,277 @@
+import { Component, computed, inject, input, output } from '@angular/core';
+import { I18nService } from '../core/i18n/i18n.service';
+import type { NormalizedZone } from '../../../shared/zone';
+
+/**
+ * One zone rendered as an ATC-style flight progress strip: fixed compartments, monospace
+ * values, colour-coded edge. Overlapping zones stack as separate strips and are never merged.
+ */
+@Component({
+  selector: 'dz-zone-strip',
+  template: `
+    <article
+      class="strip"
+      [attr.data-restriction]="zone().restriction"
+      (mouseenter)="hovered.emit(zone().id)"
+      (mouseleave)="hovered.emit(null)"
+      (focusin)="hovered.emit(zone().id)"
+      (focusout)="hovered.emit(null)"
+      tabindex="0"
+    >
+      <header>
+        <span class="rank data" aria-hidden="true">{{ rank() }}</span>
+        <h3 class="data">{{ zone().name }}</h3>
+        <span class="status">{{ i18n.t('verdict.' + zone().restriction) }}</span>
+      </header>
+
+      <div class="compartments">
+        <div class="compartment limits">
+          <span class="compartment-label">{{ i18n.t('strip.limits') }}</span>
+          <div class="stack data">
+            <span class="upper">{{ zone().altitude.upper }}</span>
+            <span class="rule"></span>
+            <span class="lower">{{
+              zone().altitude.lower === 0 ? i18n.t('strip.ground') : zone().altitude.lower
+            }}</span>
+          </div>
+          <span class="unit compartment-label">m {{ zone().altitude.reference }}</span>
+        </div>
+
+        <div class="compartment">
+          <span class="compartment-label">{{ i18n.t('strip.reasons') }}</span>
+          <p>{{ reasons() }}</p>
+
+          @if (zone().authority.noticeDays) {
+            <span class="compartment-label">{{ i18n.t('strip.notice') }}</span>
+            <p class="data">
+              {{ i18n.t('strip.noticeDays', { days: zone().authority.noticeDays! }) }}
+            </p>
+          }
+        </div>
+      </div>
+
+      @if (!zone().applicability.permanent) {
+        <p class="temporary data">
+          {{
+            i18n.t('strip.temporary', {
+              start: i18n.formatDate(temporary()!.start),
+              end: i18n.formatDate(temporary()!.end),
+            })
+          }}
+        </p>
+      }
+
+      @if (zone().text.source; as source) {
+        @if (translation(); as translated) {
+          <p class="translation">{{ translated }}</p>
+        }
+        <details>
+          <summary class="compartment-label">{{ i18n.t('strip.officialText') }}</summary>
+          <p class="official">{{ source }}</p>
+        </details>
+      } @else {
+        <p class="muted">{{ i18n.t('strip.noText') }}</p>
+      }
+
+      @if (zone().conditions.length) {
+        <span class="compartment-label">{{ i18n.t('strip.conditions') }}</span>
+        <ul>
+          @for (condition of zone().conditions; track condition) {
+            <li>{{ condition }}</li>
+          }
+        </ul>
+      }
+
+      <footer>
+        <span class="compartment-label">{{ i18n.t('strip.authority') }}</span>
+        <p class="data">
+          {{ zone().authority.name }}
+          @if (contactName(); as contact) {
+            · {{ contact }}
+          }
+        </p>
+        <p class="contacts data">
+          @if (zone().authority.email) {
+            <a [href]="'mailto:' + zone().authority.email">{{ zone().authority.email }}</a>
+          }
+          @if (zone().authority.phone) {
+            <a [href]="'tel:' + zone().authority.phone!.replace(' ', '')">{{
+              zone().authority.phone
+            }}</a>
+          }
+        </p>
+      </footer>
+    </article>
+  `,
+  styles: `
+    .strip {
+      --edge: var(--ink-3);
+      background: var(--paper-2);
+      border: 1px solid var(--rule);
+      border-left: 5px solid var(--edge);
+      padding: 0.7rem 0.85rem 0.75rem;
+      display: grid;
+      gap: 0.5rem;
+    }
+    .strip[data-restriction='PROHIBITED'] {
+      --edge: var(--prohibited);
+    }
+    .strip[data-restriction='REQ_AUTHORISATION'] {
+      --edge: var(--authorisation);
+    }
+    .strip[data-restriction='CONDITIONAL'] {
+      --edge: var(--conditional);
+    }
+    .strip:hover,
+    .strip:focus-within {
+      background: #fff;
+      border-color: var(--edge);
+    }
+    header {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+    }
+    .rank {
+      flex: none;
+      align-self: center;
+      display: grid;
+      place-items: center;
+      width: 1.25rem;
+      height: 1.25rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--paper-2);
+      background: var(--edge);
+    }
+    header h3 {
+      flex: 1;
+    }
+    h3 {
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .status {
+      color: var(--edge);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .compartments {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.85rem;
+      border-block: 1px solid var(--rule);
+      padding-block: 0.5rem;
+    }
+    .compartment {
+      display: grid;
+      gap: 0.1rem;
+      align-content: start;
+    }
+    .limits {
+      justify-items: center;
+      border-right: 1px solid var(--rule);
+      padding-right: 0.85rem;
+    }
+    /* Vertical limits are written the way a chart writes them: upper over lower. */
+    .stack {
+      display: grid;
+      justify-items: center;
+      line-height: 1.15;
+      font-size: 1.05rem;
+      font-weight: 500;
+    }
+    .stack .rule {
+      width: 2.4rem;
+      height: 1px;
+      background: var(--ink);
+      margin: 0.12rem 0;
+    }
+    .stack .lower {
+      font-size: 0.85rem;
+      color: var(--ink-2);
+    }
+    p {
+      margin: 0;
+      font-size: 0.82rem;
+      color: var(--ink-2);
+    }
+    .translation {
+      color: var(--ink);
+      font-size: 0.85rem;
+    }
+    .official {
+      font-size: 0.8rem;
+      margin-top: 0.3rem;
+    }
+    .muted {
+      color: var(--ink-3);
+      font-style: italic;
+    }
+    .temporary {
+      color: var(--conditional);
+      font-size: 0.78rem;
+    }
+    details summary {
+      cursor: pointer;
+    }
+    ul {
+      margin: 0;
+      padding-left: 1.1rem;
+      font-size: 0.82rem;
+      color: var(--ink-2);
+    }
+    footer {
+      border-top: 1px solid var(--rule);
+      padding-top: 0.45rem;
+      display: grid;
+      gap: 0.05rem;
+    }
+    .contacts {
+      display: flex;
+      gap: 0.9rem;
+      flex-wrap: wrap;
+      font-size: 0.78rem;
+    }
+  `,
+})
+export class ZoneStripComponent {
+  protected readonly i18n = inject(I18nService);
+
+  readonly zone = input.required<NormalizedZone>();
+  /** Position in the strictest-first list; the altitude ladder labels its bands the same way. */
+  readonly rank = input.required<number>();
+  readonly hovered = output<string | null>();
+
+  protected readonly reasons = computed(() =>
+    this.zone()
+      .reasons.map((r) => this.i18n.t(`reason.${r}`))
+      .join(' · '),
+  );
+
+  protected readonly translation = computed(() => {
+    const { source, translations } = this.zone().text;
+    const locale = this.i18n.locale();
+    // The source language needs no translation line; it is already shown as the official text.
+    return locale === 'bg' ? null : (translations[locale] ?? translations['en'] ?? null);
+  });
+
+  /** Some records repeat the authority's name inside the contact field; show it once. */
+  protected readonly contactName = computed(() => {
+    const { name, contactName } = this.zone().authority;
+    if (!contactName) return null;
+    const trimmed = contactName.replace(name, '').trim();
+    return trimmed.length ? trimmed : null;
+  });
+
+  protected readonly temporary = computed(() => {
+    const a = this.zone().applicability;
+    return a.permanent ? null : a;
+  });
+}

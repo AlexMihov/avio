@@ -1,1 +1,0 @@
-{"root":["./shared/source.ts","./shared/zone.ts","./sources/registry.ts","./sources/bulgaria/fetch.ts","./sources/bulgaria/manifest.ts","./sources/bulgaria/normalize.spec.ts","./sources/bulgaria/normalize.ts","./tools/build-data.ts"],"version":"6.0.3"}

@@ -1,0 +1,20 @@
+{
+  "sourceId": "ireland",
+  "sourceUrl": "https://www.iaa.ie/docs/default-source/default-document-library/uas/20260725_uas_zones_ireland_v1.geojson?sfvrsn=f9d5eff3_181&download=true",
+  "publishedAt": "2026-07-25",
+  "fetchedAt": "2026-08-02T17:28:55.539Z",
+  "zoneCount": 86,
+  "checksum": "aab6b7e10714cd1dba77bff086d004c8854a51a9c1b1693027d32529032db969",
+  "warnings": [
+    "IRL-T1: 6 applicability windows, listed as a condition",
+    "IRL-T4: 1 applicability windows, listed as a condition",
+    "IRL-T5_A: 1 applicability windows, listed as a condition",
+    "IRL-T5_B: 1 applicability windows, listed as a condition",
+    "IRL-T30: 1 applicability windows, listed as a condition",
+    "IRL-T40: 1 applicability windows, listed as a condition",
+    "IRL-T41: 1 applicability windows, listed as a condition",
+    "IRL-T39: 1 applicability windows, listed as a condition",
+    "IRL-T42: 1 applicability windows, listed as a condition",
+    "IRL-T43: 1 applicability windows, listed as a condition"
+  ]
+}

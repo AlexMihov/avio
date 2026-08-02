@@ -43,7 +43,7 @@ rebuilding:
 
 ```json
 {
-  "enabledSources": ["bulgaria", "luxembourg", "portugal", "switzerland"],
+  "enabledSources": ["bulgaria", "cyprus", "estonia", "ireland", "luxembourg", "portugal", "switzerland"],
   "defaultSources": ["switzerland"],
   "map": { "tileUrl": "...", "attribution": "...", "maxZoom": 19 },
   "defaultHeightM": 120,
@@ -85,6 +85,23 @@ browser, then English.
 Bulgaria: ГД "Гражданска въздухоплавателна администрация" —
 [UAS geographical zones](https://www.caa.bg/bg/category/633/7062). Zone texts are shown in
 the original Bulgarian, which is authoritative; English is an unofficial translation.
+
+Cyprus: Τμήμα Πολιτικής Αεροπορίας (Department of Civil Aviation) —
+[UAS geographical zones](https://drones.gov.cy/geo-zones-file/). Textbook ED-269 from a
+date-stamped file linked off the geo-zones page. Zone texts are Greek, which is
+authoritative; the English is a curated translation, as with Bulgaria.
+
+Estonia: Transpordiamet / EANS —
+[geographical zones](https://transpordiamet.ee/en/aviation-and-aviation-safety/flying-drones-estonia/geographical-zones).
+GeoJSON whose properties carry the ED-269 fields, with Estonian and English both published by
+EANS. Their "Outside Estonia" record spans the whole globe with the country as a hole; it is
+an out-of-jurisdiction notice rather than a zone, and the build drops it with a warning.
+
+Ireland: Irish Aviation Authority —
+[UAS geographic zones](https://www.iaa.ie/general-aviation/drones/uas-geographic-zones).
+GeoJSON with ED-269 semantics; the IAA publishes no vertical limits at all, so every Irish
+zone is ground to unlimited, and a few carry several applicability windows that the model
+records as a condition rather than collapsing.
 
 Luxembourg: Direction de l'Aviation Civile —
 [UAS geographical zones](https://data.public.lu/en/datasets/uas-geographical-zones-grand-duchy-of-luxembourg-zones-geographiques-uas-grand-duche-de-luxembourg/),

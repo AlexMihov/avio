@@ -5,6 +5,8 @@
       "en": "Bulgaria",
       "bg": "България",
       "pt": "Bulgária",
+      "fr": "Bulgarie",
+      "it": "Bulgaria",
       "de": "Bulgarien"
     },
     "sourceLocale": "bg",
@@ -23,12 +25,92 @@
     }
   },
   {
+    "id": "cyprus",
+    "names": {
+      "en": "Cyprus",
+      "de": "Zypern",
+      "pt": "Chipre",
+      "fr": "Chypre",
+      "it": "Cipro",
+      "bg": "Кипър"
+    },
+    "sourceLocale": "el",
+    "officialUrl": "https://drones.gov.cy/geo-zones-file/",
+    "attribution": "Τμήμα Πολιτικής Αεροπορίας (Department of Civil Aviation, Cyprus)",
+    "disclaimer": {
+      "en": "Unofficial. Always verify against the official DCA publication before flying.",
+      "de": "Inoffiziell. Vor dem Flug immer die offizielle DCA-Publikation prüfen."
+    },
+    "defaultView": {
+      "center": [
+        35,
+        33.2
+      ],
+      "zoom": 9
+    }
+  },
+  {
+    "id": "estonia",
+    "names": {
+      "en": "Estonia",
+      "de": "Estland",
+      "pt": "Estónia",
+      "fr": "Estonie",
+      "it": "Estonia",
+      "bg": "Естония"
+    },
+    "sourceLocale": "et",
+    "officialLocales": [
+      "et",
+      "en"
+    ],
+    "officialUrl": "https://transpordiamet.ee/en/aviation-and-aviation-safety/flying-drones-estonia/geographical-zones",
+    "attribution": "Transpordiamet / EANS (Estonian Transport Administration)",
+    "disclaimer": {
+      "en": "Unofficial. Always verify against the official Transpordiamet publication before flying.",
+      "de": "Inoffiziell. Vor dem Flug immer die offizielle Transpordiamet-Publikation prüfen."
+    },
+    "defaultView": {
+      "center": [
+        58.7,
+        25.5
+      ],
+      "zoom": 7
+    }
+  },
+  {
+    "id": "ireland",
+    "names": {
+      "en": "Ireland",
+      "de": "Irland",
+      "pt": "Irlanda",
+      "fr": "Irlande",
+      "it": "Irlanda",
+      "bg": "Ирландия"
+    },
+    "sourceLocale": "en",
+    "officialUrl": "https://www.iaa.ie/general-aviation/drones/uas-geographic-zones",
+    "attribution": "Irish Aviation Authority (IAA)",
+    "disclaimer": {
+      "en": "Unofficial. Always verify against the official IAA publication before flying.",
+      "de": "Inoffiziell. Vor dem Flug immer die offizielle IAA-Publikation prüfen."
+    },
+    "defaultView": {
+      "center": [
+        53.4,
+        -8
+      ],
+      "zoom": 7
+    }
+  },
+  {
     "id": "luxembourg",
     "names": {
       "en": "Luxembourg",
       "de": "Luxemburg",
       "fr": "Luxembourg",
       "bg": "Люксембург",
+      "it": "Lussemburgo",
       "pt": "Luxemburgo"
     },
     "sourceLocale": "en",
@@ -54,6 +136,7 @@
       "de": "Portugal",
       "fr": "Portugal",
       "bg": "Португалия",
+      "it": "Portogallo",
       "pt": "Portugal"
     },
     "sourceLocale": "pt",

@@ -4,6 +4,15 @@ import type { NormalizedZone } from '../shared/zone';
 import { manifest as bulgaria } from './bulgaria/manifest';
 import { fetchZones as bulgariaFetch } from './bulgaria/fetch';
 import { normalize as bulgariaNormalize } from './bulgaria/normalize';
+import { manifest as cyprus } from './cyprus/manifest';
+import { fetchZones as cyprusFetch } from './cyprus/fetch';
+import { normalize as cyprusNormalize } from './cyprus/normalize';
+import { manifest as estonia } from './estonia/manifest';
+import { fetchZones as estoniaFetch } from './estonia/fetch';
+import { normalize as estoniaNormalize } from './estonia/normalize';
+import { manifest as ireland } from './ireland/manifest';
+import { fetchZones as irelandFetch } from './ireland/fetch';
+import { normalize as irelandNormalize } from './ireland/normalize';
 import { manifest as luxembourg } from './luxembourg/manifest';
 import { fetchZones as luxembourgFetch } from './luxembourg/fetch';
 import { normalize as luxembourgNormalize } from './luxembourg/normalize';
@@ -28,6 +37,9 @@ export const CONNECTORS: Record<string, Connector> = {
     fetch: bulgariaFetch,
     normalize: bulgariaNormalize,
   },
+  cyprus: { manifest: cyprus, fetch: cyprusFetch, normalize: cyprusNormalize },
+  estonia: { manifest: estonia, fetch: estoniaFetch, normalize: estoniaNormalize },
+  ireland: { manifest: ireland, fetch: irelandFetch, normalize: irelandNormalize },
   luxembourg: {
     manifest: luxembourg,
     fetch: luxembourgFetch,

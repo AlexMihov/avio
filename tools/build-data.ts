@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { CONNECTORS } from '../sources/registry';
 import type { SourceManifest } from '../shared/source';
 import type { SourceMeta } from '../shared/zone';
+import { expiryWarnings } from './expiry';
 
 /** A jump this large means the authority changed something structural. Look before publishing. */
 const MAX_ZONE_COUNT_DELTA = 0.2;
@@ -21,6 +22,7 @@ for (const id of config.enabledSources as string[]) {
   const { raw, sourceUrl, publishedAt } = await connector.fetch();
   const { zones, warnings } = connector.normalize(raw);
   if (zones.length === 0) throw new Error(`${id}: normalizer produced no zones`);
+  warnings.push(...expiryWarnings(zones, new Date()));
 
   const dir = `public/data/${id}`;
   const metaPath = `${dir}/meta.json`;

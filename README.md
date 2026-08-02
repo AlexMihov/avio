@@ -43,7 +43,7 @@ rebuilding:
 
 ```json
 {
-  "enabledSources": ["bulgaria", "switzerland"],
+  "enabledSources": ["bulgaria", "luxembourg", "switzerland"],
   "defaultSources": ["switzerland"],
   "map": { "tileUrl": "...", "attribution": "...", "maxZoom": 19 },
   "defaultHeightM": 120,
@@ -82,6 +82,12 @@ The address bar always reflects the current query, including which countries are
 Bulgaria: ГД "Гражданска въздухоплавателна администрация" —
 [UAS geographical zones](https://www.caa.bg/bg/category/633/7062). Zone texts are shown in
 the original Bulgarian, which is authoritative; English is an unofficial translation.
+
+Luxembourg: Direction de l'Aviation Civile —
+[UAS geographical zones](https://data.public.lu/en/datasets/uas-geographical-zones-grand-duchy-of-luxembourg-zones-geographiques-uas-grand-duche-de-luxembourg/),
+ED-269 under CC0. The DAC gives every zone a validity window rather than marking any of them
+permanent, and regenerates the file per request, so the airport zones carry that day's
+operating hours. The build warns when a large share of a source is about to lapse.
 
 Switzerland: Federal Office of Civil Aviation (BAZL/FOCA) —
 [Geographical UAS zones of Switzerland](https://opendata.swiss/en/dataset/geografische-uas-gebiete-der-schweiz),

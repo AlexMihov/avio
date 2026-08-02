@@ -1,5 +1,5 @@
 {
-  "enabledSources": ["bulgaria", "switzerland"],
+  "enabledSources": ["bulgaria", "luxembourg", "switzerland"],
   "defaultSources": ["switzerland"],
   "map": {
     "tileUrl": "https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",

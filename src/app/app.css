@@ -67,6 +67,9 @@ aside {
 .legend li[data-restriction='CONDITIONAL'] {
   --edge: var(--conditional);
 }
+.legend li[data-restriction='NO_RESTRICTION'] {
+  --edge: var(--informational);
+}
 
 .legend li[data-restriction='CONDITIONAL']::before {
   border-style: dashed;

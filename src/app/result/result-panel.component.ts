@@ -78,6 +78,9 @@ import type { LonLat } from '../core/geo/geometry';
     .verdict[data-restriction='CONDITIONAL'] {
       --edge: var(--conditional);
     }
+    .verdict[data-restriction='NO_RESTRICTION'] {
+      --edge: var(--informational);
+    }
     h2 {
       margin: 0.1rem 0 0.15rem;
       font-size: 1.35rem;

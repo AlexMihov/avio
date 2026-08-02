@@ -2,7 +2,6 @@
   "app.title": "Avio",
   "app.subtitle": "Официалните географски зони за БЛС, четими за всеки",
   "query.height": "Височина на полета",
-  "query.heightHint": "метра над земната повърхност",
   "query.locate": "Моето местоположение",
   "query.locating": "Определяне…",
   "query.coords": "Ширина, дължина",
@@ -13,13 +12,12 @@
   "verdict.PROHIBITED": "Полетите са забранени",
   "verdict.REQ_AUTHORISATION": "Изисква се разрешение",
   "verdict.CONDITIONAL": "Прилагат се условия",
+  "verdict.NO_RESTRICTION": "Само информация",
   "verdict.clear": "Няма ограничения",
   "verdict.clearBody": "Няма публикувана зона, която покрива тази точка на {height} м над земята. Общите правила от отворената категория остават в сила, включително таванът от 120 м.",
   "verdict.zonesApply": "{count} зона важи тук",
   "verdict.zonesApplyPlural": "{count} зони важат тук",
   "verdict.at": "на {height} м AGL",
-  "strip.zone": "Зона",
-  "strip.status": "Статус",
   "strip.limits": "Вертикални граници",
   "strip.reasons": "Причина",
   "strip.authority": "Орган",
@@ -53,6 +51,5 @@
   "source.loading": "Зареждане на зоните…",
   "legend.title": "Легенда",
   "map.label": "Карта на зоните",
-  "disclaimer": "Неофициален инструмент. Винаги проверявайте официалната публикация преди полет.",
-  "locale.switch": "Language"
+  "disclaimer": "Неофициален инструмент. Винаги проверявайте официалната публикация преди полет."
 }

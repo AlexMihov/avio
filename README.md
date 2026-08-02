@@ -43,7 +43,7 @@ rebuilding:
 
 ```json
 {
-  "enabledSources": ["bulgaria", "luxembourg", "switzerland"],
+  "enabledSources": ["bulgaria", "luxembourg", "portugal", "switzerland"],
   "defaultSources": ["switzerland"],
   "map": { "tileUrl": "...", "attribution": "...", "maxZoom": 19 },
   "defaultHeightM": 120,
@@ -74,8 +74,11 @@ manifest, a fetcher, a normalizer and a fixture-backed test — no changes to th
 
 ## Sharing a query
 
-The address bar always reflects the current query, including which countries are selected:
-`?at=42.6977,23.3219&h=50&src=bulgaria`.
+The address bar always reflects the current query, including which countries are selected and
+which language it is being read in: `?at=38.7223,-9.1393&h=50&src=portugal&lang=pt`. A shared
+link's language wins over the recipient's stored preference — the sender chose the language
+the link should be read in. An unknown `lang` falls back to the stored choice, then the
+browser, then English.
 
 ## Data and attribution
 
@@ -88,6 +91,12 @@ Luxembourg: Direction de l'Aviation Civile —
 ED-269 under CC0. The DAC gives every zone a validity window rather than marking any of them
 permanent, and regenerates the file per request, so the airport zones carry that day's
 operating hours. The build warns when a large share of a source is about to lapse.
+
+Portugal: Autoridade Nacional da Aviação Civil (ANAC) —
+[UAS geographical zones](https://dnt.anac.pt/mapa.html). ANAC serves its ED-269 document as
+the data file of its own map viewer, writes both Portuguese and English into one message
+field, and states three nature-reserve ceilings in feet, which the build converts. **The terms of reuse
+are unconfirmed — ANAC has been asked and has not yet replied.**
 
 Switzerland: Federal Office of Civil Aviation (BAZL/FOCA) —
 [Geographical UAS zones of Switzerland](https://opendata.swiss/en/dataset/geografische-uas-gebiete-der-schweiz),

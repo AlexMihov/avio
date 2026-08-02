@@ -7,6 +7,9 @@ import { normalize as bulgariaNormalize } from './bulgaria/normalize';
 import { manifest as luxembourg } from './luxembourg/manifest';
 import { fetchZones as luxembourgFetch } from './luxembourg/fetch';
 import { normalize as luxembourgNormalize } from './luxembourg/normalize';
+import { manifest as portugal } from './portugal/manifest';
+import { fetchZones as portugalFetch } from './portugal/fetch';
+import { normalize as portugalNormalize } from './portugal/normalize';
 import { manifest as switzerland } from './switzerland/manifest';
 import { fetchZones as switzerlandFetch } from './switzerland/fetch';
 import { normalize as switzerlandNormalize } from './switzerland/normalize';
@@ -29,6 +32,11 @@ export const CONNECTORS: Record<string, Connector> = {
     manifest: luxembourg,
     fetch: luxembourgFetch,
     normalize: luxembourgNormalize,
+  },
+  portugal: {
+    manifest: portugal,
+    fetch: portugalFetch,
+    normalize: portugalNormalize,
   },
   switzerland: {
     manifest: switzerland,

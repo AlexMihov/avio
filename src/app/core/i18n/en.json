@@ -2,7 +2,6 @@
   "app.title": "Avio",
   "app.subtitle": "Official UAS geographical zones, read by anyone",
   "query.height": "Flight height",
-  "query.heightHint": "metres above ground",
   "query.locate": "Use my location",
   "query.locating": "Locating…",
   "query.coords": "Latitude, longitude",
@@ -13,13 +12,12 @@
   "verdict.PROHIBITED": "Flying prohibited",
   "verdict.REQ_AUTHORISATION": "Authorisation required",
   "verdict.CONDITIONAL": "Conditions apply",
+  "verdict.NO_RESTRICTION": "Information only",
   "verdict.clear": "No zone restrictions",
   "verdict.clearBody": "No published zone covers this point at {height} m above ground. Standard open-category rules still apply, including the 120 m ceiling.",
   "verdict.zonesApply": "{count} zone applies here",
   "verdict.zonesApplyPlural": "{count} zones apply here",
   "verdict.at": "at {height} m AGL",
-  "strip.zone": "Zone",
-  "strip.status": "Status",
   "strip.limits": "Vertical limits",
   "strip.reasons": "Reason",
   "strip.authority": "Authority",
@@ -53,6 +51,5 @@
   "source.loading": "Loading zones…",
   "legend.title": "Legend",
   "map.label": "Zone map",
-  "disclaimer": "Unofficial tool. Always verify against the official publication before flying.",
-  "locale.switch": "Език"
+  "disclaimer": "Unofficial tool. Always verify against the official publication before flying."
 }

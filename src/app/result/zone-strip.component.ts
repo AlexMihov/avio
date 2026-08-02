@@ -134,6 +134,9 @@ import type { NormalizedZone } from '../../../shared/zone';
     .strip[data-restriction='CONDITIONAL'] {
       --edge: var(--conditional);
     }
+    .strip[data-restriction='NO_RESTRICTION'] {
+      --edge: var(--informational);
+    }
     .strip:hover,
     .strip:focus-within {
       background: #fff;

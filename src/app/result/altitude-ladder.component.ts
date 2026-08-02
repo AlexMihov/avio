@@ -251,4 +251,5 @@ const FILL = {
   PROHIBITED: 'prohibited',
   REQ_AUTHORISATION: 'authorisation',
   CONDITIONAL: 'conditional',
+  NO_RESTRICTION: 'informational',
 } as const;

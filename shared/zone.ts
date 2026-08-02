@@ -1,4 +1,9 @@
-export type Restriction = 'PROHIBITED' | 'REQ_AUTHORISATION' | 'CONDITIONAL';
+export type Restriction =
+  | 'PROHIBITED'
+  | 'REQ_AUTHORISATION'
+  | 'CONDITIONAL'
+  /** ED-269 also allows a zone that carries information without restricting anything. */
+  | 'NO_RESTRICTION';
 
 export type ZoneGeometry =
   | { kind: 'circle'; center: [number, number]; radiusM: number }
@@ -46,7 +51,8 @@ export interface SourceMeta {
 }
 
 export const STRICTNESS: Record<Restriction, number> = {
-  PROHIBITED: 3,
-  REQ_AUTHORISATION: 2,
-  CONDITIONAL: 1,
+  PROHIBITED: 4,
+  REQ_AUTHORISATION: 3,
+  CONDITIONAL: 2,
+  NO_RESTRICTION: 1,
 };

@@ -16,6 +16,8 @@
   --prohibited: #b31b4b;
   --authorisation: #1b6ca8;
   --conditional: #b07d18;
+  /* Informational only: an ED-269 zone that restricts nothing. Deliberately not a warning hue. */
+  --informational: #3f6a63;
   --clear: #2f7d5b;
 
   --font-ui: 'Archivo Variable', 'Archivo', system-ui, sans-serif;

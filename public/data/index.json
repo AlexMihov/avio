@@ -4,6 +4,7 @@
     "names": {
       "en": "Bulgaria",
       "bg": "България",
+      "pt": "Bulgária",
       "de": "Bulgarien"
     },
     "sourceLocale": "bg",
@@ -27,7 +28,8 @@
       "en": "Luxembourg",
       "de": "Luxemburg",
       "fr": "Luxembourg",
-      "bg": "Люксембург"
+      "bg": "Люксембург",
+      "pt": "Luxemburgo"
     },
     "sourceLocale": "en",
     "officialUrl": "https://dac.gouvernement.lu/en/drones/geozones.html",
@@ -46,12 +48,41 @@
     }
   },
   {
+    "id": "portugal",
+    "names": {
+      "en": "Portugal",
+      "de": "Portugal",
+      "fr": "Portugal",
+      "bg": "Португалия",
+      "pt": "Portugal"
+    },
+    "sourceLocale": "pt",
+    "officialLocales": [
+      "pt",
+      "en"
+    ],
+    "officialUrl": "https://dnt.anac.pt/mapa.html",
+    "attribution": "Autoridade Nacional da Aviação Civil (ANAC Portugal)",
+    "disclaimer": {
+      "en": "Unofficial. Always verify against the official ANAC publication before flying.",
+      "de": "Inoffiziell. Vor dem Flug immer die offizielle ANAC-Publikation prüfen."
+    },
+    "defaultView": {
+      "center": [
+        39.5,
+        -8
+      ],
+      "zoom": 7
+    }
+  },
+  {
     "id": "switzerland",
     "names": {
       "en": "Switzerland",
       "de": "Schweiz",
       "fr": "Suisse",
-      "it": "Svizzera"
+      "it": "Svizzera",
+      "pt": "Suíça"
     },
     "sourceLocale": "en",
     "officialLocales": [

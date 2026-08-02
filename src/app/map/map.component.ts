@@ -19,6 +19,7 @@ const INK: Record<Restriction, string> = {
   PROHIBITED: '#b31b4b',
   REQ_AUTHORISATION: '#1b6ca8',
   CONDITIONAL: '#b07d18',
+  NO_RESTRICTION: '#3f6a63',
 };
 
 /** Prohibited areas get the heaviest line; conditional ones a chart-style dashed edge. */

@@ -10,6 +10,7 @@ const MAX_ZONE_COUNT_DELTA = 0.2;
 
 const config = JSON.parse(readFileSync('config/app.config.json', 'utf8'));
 const manifests: SourceManifest[] = [];
+const failed: string[] = [];
 
 for (const id of config.enabledSources as string[]) {
   const connector = CONNECTORS[id];
@@ -19,6 +20,21 @@ for (const id of config.enabledSources as string[]) {
     );
   }
 
+  try {
+    await build(id, connector);
+  } catch (error) {
+    // An authority that is down, blocking us, or has restructured its page must not stop the
+    // rest of the mirror refreshing. The previously published data for this source stays in
+    // place, its fetchedAt ages, and the app's own staleness banner eventually says so.
+    failed.push(`${id}: ${error instanceof Error ? error.message : error}`);
+    const previous = existsSync(`public/data/${id}/meta.json`);
+    console.error(`${id}: FAILED — ${error instanceof Error ? error.message : error}`);
+    console.error(`  ${previous ? 'keeping the previously published data' : 'no previous data to keep'}`);
+    manifests.push(connector.manifest);
+  }
+}
+
+async function build(id: string, connector: (typeof CONNECTORS)[string]): Promise<void> {
   const { raw, sourceUrl, publishedAt } = await connector.fetch();
   const { zones, warnings } = connector.normalize(raw);
   if (zones.length === 0) throw new Error(`${id}: normalizer produced no zones`);
@@ -61,3 +77,10 @@ for (const id of config.enabledSources as string[]) {
 
 mkdirSync('public/data', { recursive: true });
 writeFileSync('public/data/index.json', JSON.stringify(manifests, null, 2) + '\n');
+
+if (failed.length) {
+  console.error(`\n${failed.length} of ${config.enabledSources.length} sources failed:`);
+  for (const f of failed) console.error(`  ${f}`);
+  // Everything that did refresh has been written; the non-zero exit keeps the job red.
+  process.exitCode = 1;
+}

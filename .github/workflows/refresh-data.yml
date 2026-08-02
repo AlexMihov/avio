@@ -26,13 +26,17 @@ jobs:
 
       - run: npm ci
 
-      # Fails loudly and commits nothing if the page cannot be parsed, the download
-      # breaks, or the zone count moves by more than 20%.
-      - run: npm run data
+      # Each source is isolated: one authority being unreachable no longer stops the other
+      # six refreshing. The step is allowed to fail so that whatever did refresh still gets
+      # committed, and the job is marked red at the end.
+      - id: data
+        run: npm run data
+        continue-on-error: true
 
       - run: npm test
 
       - name: Commit refreshed data
+        if: always()
         run: |
           if git diff --quiet -- public/data; then
             echo "No change in published zones."
@@ -43,3 +47,9 @@ jobs:
           git add public/data
           git commit -m "data: refresh zones ($(date -u +%Y-%m-%d))"
           git push
+
+      - name: Fail if any source could not be refreshed
+        if: steps.data.outcome == 'failure'
+        run: |
+          echo "At least one source failed to refresh; see the 'npm run data' step." >&2
+          exit 1

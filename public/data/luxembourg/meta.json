@@ -2,9 +2,9 @@
   "sourceId": "luxembourg",
   "sourceUrl": "https://drones.geoportail.lu/zones",
   "publishedAt": "2026-08-02",
-  "fetchedAt": "2026-08-02T19:01:41.697Z",
+  "fetchedAt": "2026-08-02T19:12:23.053Z",
   "zoneCount": 47,
-  "checksum": "37bd82d841f20e54306d00305a5cecadaa77e7b7523c3c0830fffe3aded7736a",
+  "checksum": "5e2f14a25bd25ef81b74e0d967973e1290a44e2919ac7405891bb4c42a4635be",
   "warnings": [
     "11 of 47 zones have already expired and will not be shown"
   ]

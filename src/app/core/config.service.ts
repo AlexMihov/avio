@@ -7,6 +7,8 @@ export interface AppConfig {
   map: { tileUrl: string; attribution: string; maxZoom: number };
   defaultHeightM: number;
   staleAfterDays: number;
+  /** Optional. Without a valid GA4 measurement id, no analytics runs and no banner shows. */
+  analytics?: { measurementId?: string };
 }
 
 /**

@@ -27,6 +27,24 @@ jobs:
 
       - run: npm ci
       - run: npm test
+
+      # The measurement id is not a secret — it ships in the page source of any site using
+      # it — but it is personal. Keeping it out of the repository means a fork deploys with
+      # analytics off instead of silently reporting its visitors into someone else's
+      # property. Set it under Settings → Secrets and variables → Actions → Variables.
+      - name: Set the analytics measurement id
+        if: vars.GA_MEASUREMENT_ID != ''
+        run: |
+          node -e '
+            const fs = require("node:fs");
+            const path = "config/app.config.json";
+            const cfg = JSON.parse(fs.readFileSync(path, "utf8"));
+            cfg.analytics = { measurementId: process.env.GA_ID };
+            fs.writeFileSync(path, JSON.stringify(cfg, null, 2) + "\n");
+            console.log("analytics enabled for", process.env.GA_ID);
+          '
+        env:
+          GA_ID: ${{ vars.GA_MEASUREMENT_ID }}
       # index.html uses a relative base href, so the bundle works from any sub-path.
       - run: npx ng build
 

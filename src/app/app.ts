@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { ConfigService } from './core/config.service';
 import { ZonesService } from './core/zones.service';
 import { I18nService } from './core/i18n/i18n.service';
@@ -8,11 +8,19 @@ import { buildPermalink, parsePermalink } from './core/permalink';
 import { MapComponent } from './map/map.component';
 import { HeaderComponent } from './shell/header.component';
 import { FooterComponent } from './shell/footer.component';
+import { ConsentBannerComponent } from './shell/consent-banner.component';
+import { AnalyticsService } from './core/analytics.service';
 import { ResultPanelComponent } from './result/result-panel.component';
 
 @Component({
   selector: 'app-root',
-  imports: [MapComponent, HeaderComponent, ResultPanelComponent, FooterComponent],
+  imports: [
+    MapComponent,
+    HeaderComponent,
+    ResultPanelComponent,
+    FooterComponent,
+    ConsentBannerComponent,
+  ],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -20,6 +28,7 @@ export class App {
   protected readonly zonesService = inject(ZonesService);
   protected readonly i18n = inject(I18nService);
   private readonly config = inject(ConfigService);
+  private readonly analytics = inject(AnalyticsService);
 
   private readonly initial = parsePermalink(location.search);
 
@@ -31,6 +40,21 @@ export class App {
   protected readonly locating = signal(false);
 
   constructor() {
+    // A query is the point being set or moved; height alone is a nudge, not a new question,
+    // so it does not report. Reads matches() untracked to keep it out of the dependencies.
+    effect(() => {
+      const point = this.point();
+      if (!point) return;
+      untracked(() =>
+        this.analytics.trackQuery(
+          this.zonesService.activeIds(),
+          this.i18n.locale(),
+          this.matches().length,
+          point,
+        ),
+      );
+    });
+
     // The initial selection is resolved during bootstrap, before this component exists, so
     // the address bar is never rewritten with a source the visitor did not ask for.
     effect(() => {
@@ -41,6 +65,8 @@ export class App {
         locale: this.i18n.locale(),
       });
       history.replaceState(null, '', url);
+      // Must follow the rewrite: gtag reads the address bar for its own page_view.
+      this.analytics.syncPage();
     });
   }
 

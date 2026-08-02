@@ -51,5 +51,9 @@
   "source.loading": "A carregar zonas…",
   "legend.title": "Legenda",
   "map.label": "Mapa de zonas",
-  "disclaimer": "Ferramenta não oficial. Verifique sempre a publicação oficial antes de voar."
+  "disclaimer": "Ferramenta não oficial. Verifique sempre a publicação oficial antes de voar.",
+  "consent.title": "Estatísticas",
+  "consent.body": "O Avio usa o Google Analytics para contar visitas. O ponto e a altura consultados nunca são enviados.",
+  "consent.accept": "Aceitar",
+  "consent.decline": "Recusar"
 }

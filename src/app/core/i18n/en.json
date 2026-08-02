@@ -51,5 +51,9 @@
   "source.loading": "Loading zones…",
   "legend.title": "Legend",
   "map.label": "Zone map",
-  "disclaimer": "Unofficial tool. Always verify against the official publication before flying."
+  "disclaimer": "Unofficial tool. Always verify against the official publication before flying.",
+  "consent.title": "Analytics",
+  "consent.body": "Avio uses Google Analytics to count visits. The point and height you check are never sent.",
+  "consent.accept": "Accept",
+  "consent.decline": "Decline"
 }

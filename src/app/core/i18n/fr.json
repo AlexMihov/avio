@@ -51,5 +51,9 @@
   "source.loading": "Chargement des zones…",
   "legend.title": "Légende",
   "map.label": "Carte des zones",
-  "disclaimer": "Outil non officiel. Toujours vérifier la publication officielle avant de voler."
+  "disclaimer": "Outil non officiel. Toujours vérifier la publication officielle avant de voler.",
+  "consent.title": "Statistiques",
+  "consent.body": "Avio utilise Google Analytics pour compter les visites. Le point et la hauteur vérifiés ne sont jamais transmis.",
+  "consent.accept": "Accepter",
+  "consent.decline": "Refuser"
 }

@@ -57,6 +57,28 @@ combination of the enabled sources, and the selection travels in the address bar
 `?src=switzerland,bulgaria`. Every selected source is queried at once, so a point near a
 border returns the zones of both countries.
 
+`analytics.measurementId` takes a Google Analytics 4 id (`G-XXXXXXXXXX`). It is empty in this
+repository and stays that way: the deploy workflow writes the id in from the repository
+variable `GA_MEASUREMENT_ID`, so a fork builds with analytics off rather than reporting its
+visitors into someone else's property. To measure your own deployment, set that variable
+under Settings → Secrets and variables → Actions → Variables; to run analytics locally, put
+the id straight into this file and do not commit it.
+
+With an id set, the tag is loaded only after the visitor accepts, and `page_location` and
+`page_referrer` are overridden to the bare page, so the query string — the point and height
+being checked — never reaches Google. Declining loads nothing from Google at all.
+
+**One setting has to be changed in Google Analytics itself.** Enhanced measurement raises its
+own `page_view` whenever the address bar changes, reading `location.href` directly, and no
+value passed to `gtag` overrides it. Since this app keeps the query in the address bar, that
+event would carry the coordinates. Turn it off under Admin → Data streams → *your stream* →
+Enhanced measurement → the gear icon → uncheck **Page changes based on browser history
+events**. The app sends its own sanitised `page_view` instead, so nothing is lost.
+
+Each query also sends one `zone_query` event carrying the countries selected, the interface
+language, whether anything applied, and the position rounded to a tenth of a degree — around
+11 km, enough for "people are checking around Zürich" and not enough to identify a site.
+
 If `map.tileUrl` contains `{lang}`, it is filled with the active UI locale and the basemap is
 relaid when the language changes. The default CARTO basemap ignores language and is served
 without it; localised labels need a provider that supports them.

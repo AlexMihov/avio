@@ -51,5 +51,9 @@
   "source.loading": "Gebiete werden geladen…",
   "legend.title": "Legende",
   "map.label": "Gebietskarte",
-  "disclaimer": "Inoffizielles Werkzeug. Vor dem Flug immer die offizielle Publikation prüfen."
+  "disclaimer": "Inoffizielles Werkzeug. Vor dem Flug immer die offizielle Publikation prüfen.",
+  "consent.title": "Statistik",
+  "consent.body": "Avio nutzt Google Analytics, um Besuche zu zählen. Der geprüfte Punkt und die Höhe werden nie übermittelt.",
+  "consent.accept": "Akzeptieren",
+  "consent.decline": "Ablehnen"
 }

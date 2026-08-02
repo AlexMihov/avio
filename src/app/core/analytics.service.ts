@@ -45,8 +45,19 @@ export class AnalyticsService {
 
   accept(): void {
     this.remember('granted');
-    if (this.available()) this.load();
+    if (!this.available()) return;
+    this.load();
+    // Someone arriving on a shared link has already made their query by the time the banner
+    // is answered, and the point does not change afterwards. Without this, the first query
+    // of such a visit — often the only one — would never be counted.
+    this.pending?.();
   }
+
+  /**
+   * What to report if consent arrives after the query. Replaced on every query so the banner
+   * answers for the current one, and never invoked unless consent is granted.
+   */
+  private pending?: () => void;
 
   decline(): void {
     this.remember('denied');
@@ -62,8 +73,13 @@ export class AnalyticsService {
     zonesFound: number,
     point: readonly [number, number] | null,
   ): void {
+    const send = () => window.gtag?.('event', 'zone_query', queryEvent(sources, locale, zonesFound, point));
+    if (this.state() === 'unknown') {
+      this.pending = send;
+      return;
+    }
     if (this.state() !== 'granted' || !window.gtag) return;
-    window.gtag('event', 'zone_query', queryEvent(sources, locale, zonesFound, point));
+    send();
   }
 
   /**

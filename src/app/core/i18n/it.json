@@ -53,7 +53,7 @@
   "map.label": "Mappa delle zone",
   "disclaimer": "Strumento non ufficiale. Verificare sempre la pubblicazione ufficiale prima di volare.",
   "consent.title": "Statistiche",
-  "consent.body": "Avio usa Google Analytics per contare le visite. Il punto e la quota verificati non vengono mai trasmessi.",
+  "consent.body": "Avio usa Google Analytics per contare le visite. L'area viene registrata con un'approssimazione di circa 10 km — mai il punto esatto né la quota di volo.",
   "consent.accept": "Accetta",
   "consent.decline": "Rifiuta"
 }

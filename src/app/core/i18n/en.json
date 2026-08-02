@@ -53,7 +53,7 @@
   "map.label": "Zone map",
   "disclaimer": "Unofficial tool. Always verify against the official publication before flying.",
   "consent.title": "Analytics",
-  "consent.body": "Avio uses Google Analytics to count visits. The point and height you check are never sent.",
+  "consent.body": "Avio uses Google Analytics to count visits. It records the area you check to about 10 km — never your exact point or your flight height.",
   "consent.accept": "Accept",
   "consent.decline": "Decline"
 }

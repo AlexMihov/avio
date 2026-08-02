@@ -53,7 +53,7 @@
   "map.label": "Gebietskarte",
   "disclaimer": "Inoffizielles Werkzeug. Vor dem Flug immer die offizielle Publikation prüfen.",
   "consent.title": "Statistik",
-  "consent.body": "Avio nutzt Google Analytics, um Besuche zu zählen. Der geprüfte Punkt und die Höhe werden nie übermittelt.",
+  "consent.body": "Avio nutzt Google Analytics, um Besuche zu zählen. Erfasst wird das Gebiet auf etwa 10 km genau — nie der genaue Punkt und nie die Flughöhe.",
   "consent.accept": "Akzeptieren",
   "consent.decline": "Ablehnen"
 }

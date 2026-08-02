@@ -18,7 +18,13 @@ import { ZonesService } from '../core/zones.service';
           [href]="entry.sourceUrl"
           target="_blank"
           rel="noopener"
-          [attr.aria-label]="entry.name + ' — ' + i18n.t('source.official')"
+          [attr.aria-label]="
+            entry.name +
+            ' — ' +
+            i18n.t('source.published', { date: i18n.formatDate(entry.publishedAt) }) +
+            ' — ' +
+            i18n.t('source.official')
+          "
         >
           <img class="flag" [src]="'flags/' + entry.id + '.svg'" alt="" width="18" height="12" />
           <!-- The authority and its licence: Opendata BY and CC-BY style terms require the

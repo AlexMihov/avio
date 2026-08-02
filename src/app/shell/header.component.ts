@@ -105,6 +105,9 @@ import { ZonesService } from '../core/zones.service';
         {{ entry.name }} — {{ i18n.t('source.stale', { days: entry.days }) }}
       </p>
     }
+    @if (zones.loading()) {
+      <p class="loading" role="status">{{ i18n.t('source.loading') }}</p>
+    }
     @if (zones.error(); as message) {
       <p class="error" role="alert">{{ i18n.t('source.error', { message }) }}</p>
     }
@@ -253,15 +256,17 @@ import { ZonesService } from '../core/zones.service';
       color: var(--paper-2);
       border-color: var(--ink);
     }
-    .disclaimer {
-      color: var(--ink-3);
-    }
     .stale,
-    .error {
+    .error,
+    .loading {
       margin: 0;
       padding: 0.4rem 1.1rem;
       font-size: 0.78rem;
       border-bottom: 1px solid var(--rule);
+    }
+    .loading {
+      background: var(--paper-2);
+      color: var(--ink-2);
     }
     .stale {
       background: #fbf1dc;

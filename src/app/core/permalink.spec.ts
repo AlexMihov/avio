@@ -19,6 +19,14 @@ describe('parsePermalink', () => {
     ]);
   });
 
+  it('reads the language', () => {
+    expect(parsePermalink('?lang=pt').locale).toBe('pt');
+  });
+
+  it('returns no language when the parameter is absent', () => {
+    expect(parsePermalink('?at=42,23').locale).toBeNull();
+  });
+
   it('returns no sources when the parameter is absent or empty', () => {
     expect(parsePermalink('?at=42,23').sources).toEqual([]);
     expect(parsePermalink('?src=').sources).toEqual([]);
@@ -38,6 +46,7 @@ describe('buildPermalink', () => {
       point: [23.3219, 42.6977],
       heightM: 50,
       sources: ['bulgaria'],
+      locale: null,
     });
     expect(url).toBe('?at=42.69770,23.32190&h=50&src=bulgaria');
     const back = parsePermalink(url);
@@ -50,8 +59,22 @@ describe('buildPermalink', () => {
       point: [8.5492, 47.4647],
       heightM: 50,
       sources: ['switzerland', 'bulgaria'],
+      locale: null,
     });
     expect(url).toBe('?at=47.46470,8.54920&h=50&src=switzerland,bulgaria');
     expect(parsePermalink(url).sources).toEqual(['switzerland', 'bulgaria']);
+  });
+
+  it('round-trips the language alongside the rest', () => {
+    const url = buildPermalink({
+      point: [-9.1393, 38.7223],
+      heightM: 50,
+      sources: ['portugal'],
+      locale: 'pt',
+    });
+    expect(url).toBe('?at=38.72230,-9.13930&h=50&src=portugal&lang=pt');
+    const back = parsePermalink(url);
+    expect(back.locale).toBe('pt');
+    expect(back.sources).toEqual(['portugal']);
   });
 });

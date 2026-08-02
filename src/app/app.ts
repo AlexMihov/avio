@@ -38,6 +38,7 @@ export class App {
         point: this.point(),
         heightM: this.heightM(),
         sources: this.zonesService.activeIds(),
+        locale: this.i18n.locale(),
       });
       history.replaceState(null, '', url);
     });

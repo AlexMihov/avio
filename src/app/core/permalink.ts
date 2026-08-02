@@ -4,10 +4,13 @@ export interface PermalinkState {
   point: LonLat | null;
   heightM: number | null;
   sources: string[];
+  /** Unvalidated: the caller knows which locales exist. */
+  locale: string | null;
 }
 
 /**
- * `?at=<lat>,<lon>&h=<metres>&src=<id>[,<id>…]` — so a pilot can send someone the exact query.
+ * `?at=<lat>,<lon>&h=<metres>&src=<id>[,<id>…]&lang=<locale>` — so a pilot can send someone
+ * the exact query, in the language they were reading it in.
  */
 export function parsePermalink(search: string): PermalinkState {
   const params = new URLSearchParams(search);
@@ -27,7 +30,7 @@ export function parsePermalink(search: string): PermalinkState {
     .split(',')
     .map((id) => id.trim())
     .filter(Boolean);
-  return { point, heightM, sources };
+  return { point, heightM, sources, locale: params.get('lang') };
 }
 
 export function buildPermalink(state: PermalinkState): string {
@@ -37,6 +40,7 @@ export function buildPermalink(state: PermalinkState): string {
   }
   if (state.heightM !== null) params.set('h', String(state.heightM));
   if (state.sources.length) params.set('src', state.sources.join(','));
+  if (state.locale) params.set('lang', state.locale);
   // A comma is legal in a query string and keeps shared links readable.
   const query = params.toString().replace(/%2C/g, ',');
   return query ? `?${query}` : location.pathname;

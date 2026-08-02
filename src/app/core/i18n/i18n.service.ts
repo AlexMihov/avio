@@ -2,22 +2,34 @@ import { Injectable, computed, signal } from '@angular/core';
 import en from './en.json';
 import bg from './bg.json';
 import de from './de.json';
+import pt from './pt.json';
 import { formatAtOffset, offsetLabel, offsetMinutesOf } from '../instant';
+import { parsePermalink } from '../permalink';
 
-export const LOCALES = ['en', 'de', 'bg'] as const;
+export const LOCALES = ['en', 'de', 'pt', 'bg'] as const;
 export type Locale = (typeof LOCALES)[number];
 
-const CATALOGUES: Record<Locale, Record<string, string>> = { en, de, bg };
+const CATALOGUES: Record<Locale, Record<string, string>> = { en, de, pt, bg };
 const STORAGE_KEY = 'avio.locale';
 
 /** Aviation reads 24-hour, zero-padded, in every language; h23 keeps midnight as 00, not 24. */
 const CLOCK = { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' } as const;
 
+const known = (value: string | null | undefined): value is Locale =>
+  !!value && (LOCALES as readonly string[]).includes(value);
+
+/**
+ * A shared link wins over what this browser last chose: the sender picked the language the
+ * link should be read in. Otherwise the previous choice, then the browser, then English.
+ */
 function initialLocale(): Locale {
+  const shared = parsePermalink(globalThis.location?.search ?? '').locale;
+  if (known(shared)) return shared;
   const stored = globalThis.localStorage?.getItem(STORAGE_KEY);
-  if (stored && (LOCALES as readonly string[]).includes(stored)) return stored as Locale;
-  const preferred = globalThis.navigator?.language?.slice(0, 2);
-  return (LOCALES as readonly string[]).includes(preferred ?? '') ? (preferred as Locale) : 'en';
+  if (known(stored)) return stored;
+  return known(globalThis.navigator?.language?.slice(0, 2))
+    ? (globalThis.navigator.language.slice(0, 2) as Locale)
+    : 'en';
 }
 
 @Injectable({ providedIn: 'root' })

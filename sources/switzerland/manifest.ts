@@ -2,7 +2,7 @@ import type { SourceManifest } from '../../shared/source';
 
 export const manifest: SourceManifest = {
   id: 'switzerland',
-  names: { en: 'Switzerland', de: 'Schweiz', fr: 'Suisse', it: 'Svizzera' },
+  names: { en: 'Switzerland', de: 'Schweiz', fr: 'Suisse', it: 'Svizzera', pt: 'Suíça' },
   // The machine-readable ED-269 file is English; the same release carries FOCA's own DE, FR
   // and IT wording, so all four are the authority's text rather than our translation.
   sourceLocale: 'en',

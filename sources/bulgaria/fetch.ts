@@ -1,3 +1,5 @@
+import { request } from '../http';
+
 import JSZip from 'jszip';
 import { manifest } from './manifest';
 
@@ -13,7 +15,7 @@ export async function fetchZones(): Promise<{
   sourceUrl: string;
   publishedAt: string;
 }> {
-  const page = await fetch(manifest.officialUrl).then((r) => {
+  const page = await request(manifest.officialUrl).then((r) => {
     if (!r.ok) throw new Error(`index page returned ${r.status}`);
     return r.text();
   });
@@ -26,7 +28,7 @@ export async function fetchZones(): Promise<{
   const sourceUrl = href.startsWith('http') ? href : ORIGIN + href;
   const publishedAt = `${yyyy}-${mm}-${dd}`;
 
-  const buf = await fetch(sourceUrl).then((r) => {
+  const buf = await request(sourceUrl).then((r) => {
     if (!r.ok) throw new Error(`zip download returned ${r.status}`);
     return r.arrayBuffer();
   });

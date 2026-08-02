@@ -1,3 +1,5 @@
+import { request } from '../http';
+
 const ZONES_URL = 'https://drones.geoportail.lu/zones';
 
 /**
@@ -11,7 +13,7 @@ export async function fetchZones(): Promise<{
   sourceUrl: string;
   publishedAt: string;
 }> {
-  const text = await fetch(ZONES_URL).then((r) => {
+  const text = await request(ZONES_URL).then((r) => {
     if (!r.ok) throw new Error(`zone download returned ${r.status}`);
     return r.text();
   });

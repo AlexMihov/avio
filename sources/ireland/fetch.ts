@@ -1,4 +1,5 @@
 import { manifest } from './manifest';
+import { request } from '../http';
 
 const ORIGIN = 'https://www.iaa.ie';
 
@@ -11,7 +12,7 @@ export async function fetchZones(): Promise<{
   sourceUrl: string;
   publishedAt: string;
 }> {
-  const page = await fetch(manifest.officialUrl).then((r) => {
+  const page = await request(manifest.officialUrl).then((r) => {
     if (!r.ok) throw new Error(`zones page returned ${r.status}`);
     return r.text();
   });
@@ -21,7 +22,7 @@ export async function fetchZones(): Promise<{
   const href = match[1].replace(/&amp;/g, '&');
   const sourceUrl = href.startsWith('http') ? href : ORIGIN + href;
 
-  const raw = await fetch(sourceUrl).then((r) => {
+  const raw = await request(sourceUrl).then((r) => {
     if (!r.ok) throw new Error(`zone download returned ${r.status}`);
     return r.text();
   });

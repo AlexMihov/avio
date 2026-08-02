@@ -1,3 +1,5 @@
+import { request } from '../http';
+
 const ZONES_URL = 'https://utm.eans.ee/avm/utm/uas.geojson';
 
 /**
@@ -9,7 +11,7 @@ export async function fetchZones(): Promise<{
   sourceUrl: string;
   publishedAt: string;
 }> {
-  const raw = await fetch(ZONES_URL).then((r) => {
+  const raw = await request(ZONES_URL).then((r) => {
     if (!r.ok) throw new Error(`zone download returned ${r.status}`);
     return r.text();
   });

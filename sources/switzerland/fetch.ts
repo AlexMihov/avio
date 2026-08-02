@@ -1,3 +1,5 @@
+import { request } from '../http';
+
 import { DatabaseSync } from 'node:sqlite';
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -83,7 +85,7 @@ export async function fetchZones(): Promise<{
   sourceUrl: string;
   publishedAt: string;
 }> {
-  const items = await fetch(STAC_ITEMS).then((r) => {
+  const items = await request(STAC_ITEMS).then((r) => {
     if (!r.ok) throw new Error(`STAC items returned ${r.status}`);
     return r.json();
   });
@@ -98,11 +100,11 @@ export async function fetchZones(): Promise<{
 
   const sourceUrl = assetHref(item, ZONES_ASSET);
   const [ed269, gpkg] = await Promise.all([
-    fetch(sourceUrl).then((r) => {
+    request(sourceUrl).then((r) => {
       if (!r.ok) throw new Error(`zone download returned ${r.status}`);
       return r.json();
     }),
-    fetch(assetHref(item, TEXTS_ASSET)).then((r) => {
+    request(assetHref(item, TEXTS_ASSET)).then((r) => {
       if (!r.ok) throw new Error(`geopackage download returned ${r.status}`);
       return r.arrayBuffer();
     }),

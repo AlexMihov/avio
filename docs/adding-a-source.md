@@ -68,6 +68,10 @@ export function normalize(raw: string): { zones: NormalizedZone[]; warnings: str
   the source mixes references within one zone.
 - Keep the authority's own text in `text.source` and put translations in
   `text.translations`. The original is always displayed and is the authoritative version.
+- If the authority publishes its text in several languages itself, list them in the manifest's
+  `officialLocales`. None of them is then labelled an unofficial translation. Switzerland does
+  this: the ED-269 file is English, and the GeoPackage in the same release carries the German,
+  French and Italian, joined on the identifier by `fetch.ts`.
 
 Most European authorities publish ED-269, so `sources/bulgaria/normalize.ts` is usually the
 right starting point — copy it and adjust field names.

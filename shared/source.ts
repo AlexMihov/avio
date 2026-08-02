@@ -5,6 +5,11 @@ export interface SourceManifest {
   names: Record<string, string>;
   /** Locale of the authority's own zone texts. */
   sourceLocale: string;
+  /**
+   * Locales the authority publishes itself. Text in one of these is the authority's wording,
+   * not our translation, and must not be labelled unofficial. Defaults to `[sourceLocale]`.
+   */
+  officialLocales?: string[];
   /** Human-facing page where the authority publishes the data. */
   officialUrl: string;
   attribution: string;

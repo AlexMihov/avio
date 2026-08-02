@@ -4,6 +4,9 @@ import type { NormalizedZone } from '../shared/zone';
 import { manifest as bulgaria } from './bulgaria/manifest';
 import { fetchZones as bulgariaFetch } from './bulgaria/fetch';
 import { normalize as bulgariaNormalize } from './bulgaria/normalize';
+import { manifest as switzerland } from './switzerland/manifest';
+import { fetchZones as switzerlandFetch } from './switzerland/fetch';
+import { normalize as switzerlandNormalize } from './switzerland/normalize';
 
 export interface Connector {
   manifest: SourceManifest;
@@ -18,5 +21,10 @@ export const CONNECTORS: Record<string, Connector> = {
     manifest: bulgaria,
     fetch: bulgariaFetch,
     normalize: bulgariaNormalize,
+  },
+  switzerland: {
+    manifest: switzerland,
+    fetch: switzerlandFetch,
+    normalize: switzerlandNormalize,
   },
 };

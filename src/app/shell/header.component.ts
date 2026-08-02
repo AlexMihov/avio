@@ -19,18 +19,22 @@ import { ZonesService } from '../core/zones.service';
 
       <div class="controls">
         @if (zones.manifests().length > 1) {
-          <label class="field">
-            <span class="compartment-label">{{ i18n.t('source.label') }}</span>
-            <select
-              [ngModel]="zones.activeId()"
-              (ngModelChange)="sourceChanged.emit($event)"
-              class="data"
-            >
+          <fieldset class="field sources">
+            <legend class="compartment-label">{{ i18n.t('source.label') }}</legend>
+            <div class="checks">
               @for (manifest of zones.manifests(); track manifest.id) {
-                <option [value]="manifest.id">{{ i18n.pick(manifest.names) }}</option>
+                <label class="check data" [class.on]="isActive(manifest.id)">
+                  <input
+                    type="checkbox"
+                    [checked]="isActive(manifest.id)"
+                    [disabled]="isLastActive(manifest.id)"
+                    (change)="toggle(manifest.id)"
+                  />
+                  {{ i18n.pick(manifest.names) }}
+                </label>
               }
-            </select>
-          </label>
+            </div>
+          </fieldset>
         }
 
         <label class="field height">
@@ -85,19 +89,26 @@ import { ZonesService } from '../core/zones.service';
     </header>
 
     <div class="ribbon">
-      @if (zones.meta(); as meta) {
-        <span class="data">{{
-          i18n.t('source.published', { date: i18n.formatDate(meta.publishedAt) })
-        }}</span>
-        <a [href]="meta.sourceUrl" target="_blank" rel="noopener">{{
-          i18n.t('source.official')
-        }}</a>
-        <span class="disclaimer">{{ i18n.t('disclaimer') }}</span>
+      @for (entry of published(); track entry.id) {
+        <span class="published">
+          @if (published().length > 1) {
+            <span class="data who">{{ entry.name }}</span>
+          }
+          <span class="data">{{
+            i18n.t('source.published', { date: i18n.formatDate(entry.publishedAt) })
+          }}</span>
+          <a [href]="entry.sourceUrl" target="_blank" rel="noopener">{{
+            i18n.t('source.official')
+          }}</a>
+        </span>
       }
+      <span class="disclaimer">{{ i18n.t('disclaimer') }}</span>
     </div>
 
-    @if (staleDays(); as days) {
-      <p class="stale" role="status">{{ i18n.t('source.stale', { days }) }}</p>
+    @for (entry of stale(); track entry.id) {
+      <p class="stale" role="status">
+        {{ entry.name }} — {{ i18n.t('source.stale', { days: entry.days }) }}
+      </p>
     }
     @if (zones.error(); as message) {
       <p class="error" role="alert">{{ i18n.t('source.error', { message }) }}</p>
@@ -141,6 +152,42 @@ import { ZonesService } from '../core/zones.service';
       display: grid;
       gap: 0.15rem;
       min-width: 0;
+    }
+    fieldset.sources {
+      border: 0;
+      margin: 0;
+      padding: 0;
+    }
+    fieldset.sources legend {
+      padding: 0;
+    }
+    .checks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+    .check {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.22rem 0.45rem;
+      border: 1px solid var(--rule);
+      background: var(--paper);
+      font-size: 0.8rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .check.on {
+      border-color: var(--ink);
+      background: #fff;
+    }
+    /* The only selected source cannot be turned off, so it reads as fixed rather than broken. */
+    .check:has(input:disabled) {
+      cursor: default;
+      opacity: 0.75;
+    }
+    .check input {
+      margin: 0;
     }
     .input-row {
       display: flex;
@@ -208,6 +255,15 @@ import { ZonesService } from '../core/zones.service';
       color: var(--ink-2);
       border-bottom: 1px solid var(--rule);
     }
+    .published {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.35rem;
+    }
+    .published .who::after {
+      content: ':';
+    }
     .disclaimer {
       color: var(--ink-3);
     }
@@ -264,17 +320,65 @@ export class HeaderComponent {
   readonly heightChanged = output<number>();
   readonly coordsSubmitted = output<[number, number]>();
   readonly locateRequested = output<void>();
-  readonly sourceChanged = output<string>();
+  readonly sourcesChanged = output<string[]>();
 
   protected typedCoords = '';
 
-  /** Whole days since the mirror last refreshed, or null while it is still fresh. */
-  protected readonly staleDays = computed(() => {
-    const meta = this.zones.meta();
-    if (!meta) return null;
-    const days = Math.floor((Date.now() - new Date(meta.fetchedAt).getTime()) / 86_400_000);
-    return days > this.config.required.staleAfterDays ? days : null;
+  /** Publication line per selected source, in the order they were selected. */
+  protected readonly published = computed(() => {
+    const metas = this.zones.metas();
+    return this.zones
+      .activeIds()
+      .filter((id) => metas[id])
+      .map((id) => ({
+        id,
+        name: this.sourceName(id),
+        publishedAt: metas[id].publishedAt,
+        sourceUrl: metas[id].sourceUrl,
+      }));
   });
+
+  /** Only the sources whose mirror has gone past the configured freshness window. */
+  protected readonly stale = computed(() => {
+    const metas = this.zones.metas();
+    const limit = this.config.required.staleAfterDays;
+    return this.zones
+      .activeIds()
+      .filter((id) => metas[id])
+      .map((id) => ({
+        id,
+        name: this.sourceName(id),
+        days: Math.floor((Date.now() - new Date(metas[id].fetchedAt).getTime()) / 86_400_000),
+      }))
+      .filter((entry) => entry.days > limit);
+  });
+
+  protected isActive(id: string): boolean {
+    return this.zones.activeIds().includes(id);
+  }
+
+  /** The last remaining source cannot be switched off; an empty map answers nothing. */
+  protected isLastActive(id: string): boolean {
+    const active = this.zones.activeIds();
+    return active.length === 1 && active[0] === id;
+  }
+
+  protected toggle(id: string): void {
+    const active = this.zones.activeIds();
+    const next = active.includes(id)
+      ? active.filter((other) => other !== id)
+      : // Keep the configured order rather than click order, so the list reads consistently.
+        this.zones
+          .manifests()
+          .map((m) => m.id)
+          .filter((candidate) => candidate === id || active.includes(candidate));
+    if (next.length) this.sourcesChanged.emit(next);
+  }
+
+  private sourceName(id: string): string {
+    const manifest = this.zones.manifest(id);
+    return manifest ? this.i18n.pick(manifest.names) : id;
+  }
 
   protected submitCoords(): void {
     const match = this.typedCoords.match(/(-?\d+(?:\.\d+)?)\s*[,; ]\s*(-?\d+(?:\.\d+)?)/);

@@ -2,7 +2,7 @@ import type { SourceManifest } from '../../shared/source';
 
 export const manifest: SourceManifest = {
   id: 'bulgaria',
-  names: { en: 'Bulgaria', bg: 'България' },
+  names: { en: 'Bulgaria', bg: 'България', de: 'Bulgarien' },
   sourceLocale: 'bg',
   officialUrl: 'https://www.caa.bg/bg/category/633/7062',
   attribution: 'ГД "Гражданска въздухоплавателна администрация" (CAA Bulgaria)',

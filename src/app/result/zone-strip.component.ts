@@ -1,5 +1,7 @@
 import { Component, computed, inject, input, output } from '@angular/core';
 import { I18nService } from '../core/i18n/i18n.service';
+import { MarkedTextComponent } from './marked-text.component';
+import { ZonesService } from '../core/zones.service';
 import type { NormalizedZone } from '../../../shared/zone';
 
 /**
@@ -8,6 +10,7 @@ import type { NormalizedZone } from '../../../shared/zone';
  */
 @Component({
   selector: 'dz-zone-strip',
+  imports: [MarkedTextComponent],
   template: `
     <article
       class="strip"
@@ -20,7 +23,12 @@ import type { NormalizedZone } from '../../../shared/zone';
     >
       <header>
         <span class="rank data" aria-hidden="true">{{ rank() }}</span>
-        <h3 class="data">{{ zone().name }}</h3>
+        <h3 class="data">
+          {{ zone().name }}
+          @if (sourceName(); as country) {
+            <span class="origin data">{{ country }}</span>
+          }
+        </h3>
         <span class="status">{{ i18n.t('verdict.' + zone().restriction) }}</span>
       </header>
 
@@ -28,7 +36,9 @@ import type { NormalizedZone } from '../../../shared/zone';
         <div class="compartment limits">
           <span class="compartment-label">{{ i18n.t('strip.limits') }}</span>
           <div class="stack data">
-            <span class="upper">{{ zone().altitude.upper }}</span>
+            <span class="upper">{{
+              zone().altitude.upper ?? i18n.t('strip.noCeiling')
+            }}</span>
             <span class="rule"></span>
             <span class="lower">{{
               zone().altitude.lower === 0 ? i18n.t('strip.ground') : zone().altitude.lower
@@ -63,21 +73,26 @@ import type { NormalizedZone } from '../../../shared/zone';
 
       @if (zone().text.source; as source) {
         @if (translation(); as translated) {
-          <p class="translation">{{ translated }}</p>
+          @if (!multilingualSource()) {
+            <span class="compartment-label">{{ i18n.t('strip.translation') }}</span>
+          }
+          <p class="translation"><dz-marked-text [text]="translated" /></p>
         }
-        <details>
-          <summary class="compartment-label">{{ i18n.t('strip.officialText') }}</summary>
-          <p class="official">{{ source }}</p>
+        <!-- With no other text standing in for it, the official text is the only text there
+             is, so it should not be behind a disclosure. -->
+        <details [open]="!translation()">
+          <summary class="compartment-label">{{ officialTextLabel() }}</summary>
+          <p class="official"><dz-marked-text [text]="source" /></p>
         </details>
       } @else {
         <p class="muted">{{ i18n.t('strip.noText') }}</p>
       }
 
-      @if (zone().conditions.length) {
+      @if (conditions().length) {
         <span class="compartment-label">{{ i18n.t('strip.conditions') }}</span>
         <ul>
-          @for (condition of zone().conditions; track condition) {
-            <li>{{ condition }}</li>
+          @for (condition of conditions(); track $index) {
+            <li><dz-marked-text [text]="condition" /></li>
           }
         </ul>
       }
@@ -85,7 +100,7 @@ import type { NormalizedZone } from '../../../shared/zone';
       <footer>
         <span class="compartment-label">{{ i18n.t('strip.authority') }}</span>
         <p class="data">
-          {{ zone().authority.name }}
+          {{ authorityName() }}
           @if (contactName(); as contact) {
             · {{ contact }}
           }
@@ -146,6 +161,17 @@ import type { NormalizedZone } from '../../../shared/zone';
     }
     header h3 {
       flex: 1;
+    }
+    .origin {
+      display: inline-block;
+      margin-left: 0.4rem;
+      padding: 0 0.28rem;
+      border: 1px solid var(--rule);
+      font-size: 0.65rem;
+      font-weight: 500;
+      color: var(--ink-2);
+      vertical-align: 0.1em;
+      white-space: nowrap;
     }
     h3 {
       margin: 0;
@@ -243,6 +269,7 @@ import type { NormalizedZone } from '../../../shared/zone';
 })
 export class ZoneStripComponent {
   protected readonly i18n = inject(I18nService);
+  private readonly zones = inject(ZonesService);
 
   readonly zone = input.required<NormalizedZone>();
   /** Position in the strictest-first list; the altitude ladder labels its bands the same way. */
@@ -255,11 +282,46 @@ export class ZoneStripComponent {
       .join(' · '),
   );
 
+  /** The country a zone came from, shown only when more than one is on the map. */
+  protected readonly sourceName = computed(() => {
+    if (this.zones.activeIds().length < 2) return null;
+    const manifest = this.zones.manifest(this.zone().sourceId);
+    return manifest ? this.i18n.pick(manifest.names) : this.zone().sourceId;
+  });
+
   protected readonly translation = computed(() => {
     const { source, translations } = this.zone().text;
     const locale = this.i18n.locale();
-    // The source language needs no translation line; it is already shown as the official text.
-    return locale === 'bg' ? null : (translations[locale] ?? translations['en'] ?? null);
+    // Reading the authority's own language needs no second line; the official text is already
+    // in it. Which language that is comes from the source, not from a fixed guess.
+    const sourceLocale = this.zones.manifest(this.zone().sourceId)?.sourceLocale;
+    if (locale === sourceLocale) return null;
+    const text = translations[locale] ?? translations['en'] ?? null;
+    return text === source ? null : text;
+  });
+
+  /** True when the source publishes several languages itself, so none is a translation. */
+  protected readonly multilingualSource = computed(
+    () => (this.zones.manifest(this.zone().sourceId)?.officialLocales?.length ?? 1) > 1,
+  );
+
+  /** Label for the disclosure holding `text.source`, naming its language when it is one of many. */
+  protected readonly officialTextLabel = computed(() => {
+    const sourceLocale = this.zones.manifest(this.zone().sourceId)?.sourceLocale ?? '';
+    return this.multilingualSource()
+      ? this.i18n.t('strip.officialTextIn', { lang: sourceLocale.toUpperCase() })
+      : this.i18n.t('strip.officialText');
+  });
+
+  /** Conditions in the reader's language where the authority publishes them. */
+  protected readonly conditions = computed(() => {
+    const zone = this.zone();
+    return zone.conditionTranslations?.[this.i18n.locale()] ?? zone.conditions;
+  });
+
+  protected readonly authorityName = computed(() => {
+    const { name, nameTranslations } = this.zone().authority;
+    return nameTranslations?.[this.i18n.locale()] ?? name;
   });
 
   /** Some records repeat the authority's name inside the contact field; show it once. */

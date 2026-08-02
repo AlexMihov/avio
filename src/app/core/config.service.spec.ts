@@ -10,7 +10,7 @@ function stubFetch(body: unknown, ok = true) {
 
 const valid = {
   enabledSources: ['bulgaria'],
-  defaultSource: 'bulgaria',
+  defaultSources: ['bulgaria'],
   map: { tileUrl: 't', attribution: 'a', maxZoom: 19 },
   defaultHeightM: 120,
   staleAfterDays: 7,
@@ -19,9 +19,25 @@ const valid = {
 afterEach(() => vi.unstubAllGlobals());
 
 describe('ConfigService', () => {
-  it('rejects a defaultSource that is not enabled', async () => {
-    stubFetch({ ...valid, defaultSource: 'switzerland' });
+  it('rejects a default source that is not enabled', async () => {
+    stubFetch({ ...valid, defaultSources: ['switzerland'] });
     await expect(new ConfigService().load()).rejects.toThrow(/not in enabledSources/);
+  });
+
+  it('rejects an empty default selection', async () => {
+    stubFetch({ ...valid, defaultSources: [] });
+    await expect(new ConfigService().load()).rejects.toThrow(/no defaultSources/);
+  });
+
+  it('accepts several default sources', async () => {
+    stubFetch({
+      ...valid,
+      enabledSources: ['bulgaria', 'switzerland'],
+      defaultSources: ['bulgaria', 'switzerland'],
+    });
+    const svc = new ConfigService();
+    await svc.load();
+    expect(svc.required.defaultSources).toEqual(['bulgaria', 'switzerland']);
   });
 
   it('rejects an empty source list', async () => {
@@ -38,7 +54,7 @@ describe('ConfigService', () => {
     stubFetch(valid);
     const svc = new ConfigService();
     await svc.load();
-    expect(svc.required.defaultSource).toBe('bulgaria');
+    expect(svc.required.defaultSources).toEqual(['bulgaria']);
   });
 
   it('refuses to hand out config before it is loaded', () => {

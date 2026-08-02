@@ -1,6 +1,6 @@
 {
-  "enabledSources": ["bulgaria"],
-  "defaultSource": "bulgaria",
+  "enabledSources": ["bulgaria", "switzerland"],
+  "defaultSources": ["switzerland"],
   "map": {
     "tileUrl": "https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
     "attribution": "&copy; OpenStreetMap contributors &copy; CARTO",

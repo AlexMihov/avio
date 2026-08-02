@@ -3,10 +3,12 @@ import type { LonLat } from './geo/geometry';
 export interface PermalinkState {
   point: LonLat | null;
   heightM: number | null;
-  source: string | null;
+  sources: string[];
 }
 
-/** `?at=<lat>,<lon>&h=<metres>&src=<sourceId>` — so a pilot can send someone the exact query. */
+/**
+ * `?at=<lat>,<lon>&h=<metres>&src=<id>[,<id>…]` — so a pilot can send someone the exact query.
+ */
 export function parsePermalink(search: string): PermalinkState {
   const params = new URLSearchParams(search);
   const at = params.get('at');
@@ -21,7 +23,11 @@ export function parsePermalink(search: string): PermalinkState {
   }
 
   const heightM = h !== null && Number.isFinite(Number(h)) ? Number(h) : null;
-  return { point, heightM, source: params.get('src') };
+  const sources = (params.get('src') ?? '')
+    .split(',')
+    .map((id) => id.trim())
+    .filter(Boolean);
+  return { point, heightM, sources };
 }
 
 export function buildPermalink(state: PermalinkState): string {
@@ -30,7 +36,7 @@ export function buildPermalink(state: PermalinkState): string {
     params.set('at', `${state.point[1].toFixed(5)},${state.point[0].toFixed(5)}`);
   }
   if (state.heightM !== null) params.set('h', String(state.heightM));
-  if (state.source) params.set('src', state.source);
+  if (state.sources.length) params.set('src', state.sources.join(','));
   // A comma is legal in a query string and keeps shared links readable.
   const query = params.toString().replace(/%2C/g, ',');
   return query ? `?${query}` : location.pathname;

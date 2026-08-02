@@ -4,8 +4,8 @@ Official UAS geographical zones on a map you can actually use. Pick a point, ent
 height you intend to fly at, and see every zone that applies — with the authority's own
 text, the vertical limits, and who to contact for permission.
 
-Bulgaria is the first source, because the Civil Aviation Administration publishes the data
-as an ED-269 JSON file but offers no usable public map.
+Bulgaria was the first source, because the Civil Aviation Administration publishes the data
+as an ED-269 JSON file but offers no usable public map. Switzerland followed.
 
 **This is an unofficial tool. Always verify against the official publication before flying.**
 
@@ -43,8 +43,8 @@ rebuilding:
 
 ```json
 {
-  "enabledSources": ["bulgaria"],
-  "defaultSource": "bulgaria",
+  "enabledSources": ["bulgaria", "switzerland"],
+  "defaultSources": ["switzerland"],
   "map": { "tileUrl": "...", "attribution": "...", "maxZoom": 19 },
   "defaultHeightM": 120,
   "staleAfterDays": 7
@@ -52,7 +52,14 @@ rebuilding:
 ```
 
 `tools/build-data.ts` reads the same file, so enabling a source turns on both its data build
-and its entry in the UI.
+and its entry in the UI. `defaultSources` is what a first visit selects; visitors can tick any
+combination of the enabled sources, and the selection travels in the address bar as
+`?src=switzerland,bulgaria`. Every selected source is queried at once, so a point near a
+border returns the zones of both countries.
+
+If `map.tileUrl` contains `{lang}`, it is filled with the active UI locale and the basemap is
+relaid when the language changes. The default CARTO basemap ignores language and is served
+without it; localised labels need a provider that supports them.
 
 ## Self-hosting
 
@@ -67,12 +74,21 @@ manifest, a fetcher, a normalizer and a fixture-backed test — no changes to th
 
 ## Sharing a query
 
-The address bar always reflects the current query: `?at=42.6977,23.3219&h=50`.
+The address bar always reflects the current query, including which countries are selected:
+`?at=42.6977,23.3219&h=50&src=bulgaria`.
 
 ## Data and attribution
 
 Bulgaria: ГД "Гражданска въздухоплавателна администрация" —
 [UAS geographical zones](https://www.caa.bg/bg/category/633/7062). Zone texts are shown in
 the original Bulgarian, which is authoritative; English is an unofficial translation.
+
+Switzerland: Federal Office of Civil Aviation (BAZL/FOCA) —
+[Geographical UAS zones of Switzerland](https://opendata.swiss/en/dataset/geografische-uas-gebiete-der-schweiz),
+published as ED-269 via the geo.admin.ch STAC API under Opendata BY, which requires the
+source to be named. The ED-269 file carries English text only; the GeoPackage in the same
+release carries FOCA's own German, French and Italian wording, so the build reads both and
+joins them on the zone identifier. All four languages are the authority's, none is a
+translation of ours, and the strip labels them accordingly.
 
 Basemap © OpenStreetMap contributors, © CARTO.

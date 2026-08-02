@@ -47,6 +47,28 @@ describe('queryZones', () => {
     expect(queryZones([zone()], [23, 42], 121)).toHaveLength(0);
   });
 
+  it('applies a zone with no ceiling at any height above its floor', () => {
+    const open = zone({
+      id: 'open',
+      altitude: { lower: 120, upper: null, unit: 'm', reference: 'AGL' },
+    });
+    expect(queryZones([open], [23, 42], 119)).toHaveLength(0);
+    expect(queryZones([open], [23, 42], 120)).toHaveLength(1);
+    expect(queryZones([open], [23, 42], 8000)).toHaveLength(1);
+  });
+
+  it('sorts a zone with no ceiling last among equally strict zones', () => {
+    const zones = [
+      zone({
+        id: 'open',
+        restriction: 'CONDITIONAL',
+        altitude: { lower: 0, upper: null, unit: 'm', reference: 'AGL' },
+      }),
+      zone({ id: 'capped', restriction: 'CONDITIONAL' }),
+    ];
+    expect(queryZones(zones, [23, 42], 50).map((m) => m.zone.id)).toEqual(['capped', 'open']);
+  });
+
   it('sorts strictest first, then by the lower ceiling', () => {
     const zones = [
       zone({ id: 'cond', restriction: 'CONDITIONAL' }),

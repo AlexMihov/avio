@@ -1,0 +1,29 @@
+{
+  "sourceId": "switzerland",
+  "sourceUrl": "https://data.geo.admin.ch/ch.bazl.einschraenkungen-drohnen/einschraenkungen-drohnen/einschraenkungen-drohnen_4326.json",
+  "publishedAt": "2026-08-02",
+  "fetchedAt": "2026-08-02T14:06:03.196Z",
+  "zoneCount": 1300,
+  "checksum": "547c303e10c31c20c08b1b30ad9c28082f37a59f5badafbd42f098545f00d3f7",
+  "warnings": [
+    "CHE-KTAG301: daily time window is published but not modelled",
+    "CHE-KTAG201: daily time window is published but not modelled",
+    "CHE-KTAG101: daily time window is published but not modelled",
+    "CHE-KTAG102: daily time window is published but not modelled",
+    "CHE-KTAG103: daily time window is published but not modelled",
+    "CHE-KTAG401: daily time window is published but not modelled",
+    "CHE-KTAG509: daily time window is published but not modelled",
+    "CHE-KTAG507: daily time window is published but not modelled",
+    "CHE-KTAG504: daily time window is published but not modelled",
+    "CHE-KTAG506: daily time window is published but not modelled",
+    "CHE-KTAG505: daily time window is published but not modelled",
+    "CHE-KTAG503: daily time window is published but not modelled",
+    "CHE-KTAG508: daily time window is published but not modelled",
+    "CHE-KTAG502: daily time window is published but not modelled",
+    "CHE-KTAG501: daily time window is published but not modelled",
+    "CHE-KTAG510: daily time window is published but not modelled",
+    "CHE-KTAG601: daily time window is published but not modelled",
+    "CHE-KTAG602: daily time window is published but not modelled",
+    "CHE-KTAG701: daily time window is published but not modelled"
+  ]
+}

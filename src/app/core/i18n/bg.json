@@ -26,10 +26,12 @@
   "strip.noticeDays": "{days} дни предварително",
   "strip.conditions": "Условия",
   "strip.officialText": "Официален текст — меродавен",
+  "strip.officialTextIn": "Официален текст ({lang})",
   "strip.translation": "Неофициален превод",
   "strip.noText": "Органът не публикува текст за тази зона.",
   "strip.temporary": "Активна от {start} до {end}",
   "strip.ground": "ЗЕМ",
+  "strip.noCeiling": "НЕОГР",
   "ladder.title": "Вертикален профил",
   "ladder.you": "Вие",
   "ladder.free": "Без ограничение",
@@ -47,6 +49,7 @@
   "source.error": "Данните за зоните не могат да бъдат заредени. {message}",
   "source.loading": "Зареждане на зоните…",
   "legend.title": "Легенда",
+  "map.label": "Карта на зоните",
   "disclaimer": "Неофициален инструмент. Винаги проверявайте официалната публикация преди полет.",
   "locale.switch": "Language"
 }

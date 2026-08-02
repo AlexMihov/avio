@@ -3,7 +3,8 @@
     "id": "bulgaria",
     "names": {
       "en": "Bulgaria",
-      "bg": "България"
+      "bg": "България",
+      "de": "Bulgarien"
     },
     "sourceLocale": "bg",
     "officialUrl": "https://www.caa.bg/bg/category/633/7062",
@@ -18,6 +19,36 @@
         25.4858
       ],
       "zoom": 7
+    }
+  },
+  {
+    "id": "switzerland",
+    "names": {
+      "en": "Switzerland",
+      "de": "Schweiz",
+      "fr": "Suisse",
+      "it": "Svizzera"
+    },
+    "sourceLocale": "en",
+    "officialLocales": [
+      "de",
+      "fr",
+      "it",
+      "en"
+    ],
+    "officialUrl": "https://www.bazl.admin.ch/bazl/en/home/gutzuwissen/drohnen-und-flugmodelle.html",
+    "attribution": "Federal Office of Civil Aviation (FOCA/BAZL) — opendata.swiss, Opendata BY",
+    "disclaimer": {
+      "en": "Unofficial. Always verify against the official FOCA publication before flying.",
+      "de": "Inoffiziell. Vor dem Flug immer die offizielle BAZL-Publikation prüfen.",
+      "fr": "Non officiel. Toujours vérifier la publication officielle de l'OFAC avant de voler."
+    },
+    "defaultView": {
+      "center": [
+        46.8182,
+        8.2275
+      ],
+      "zoom": 8
     }
   }
 ]

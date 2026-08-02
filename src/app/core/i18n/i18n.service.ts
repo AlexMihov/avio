@@ -1,18 +1,19 @@
 import { Injectable, computed, signal } from '@angular/core';
 import en from './en.json';
 import bg from './bg.json';
+import de from './de.json';
 
-export const LOCALES = ['en', 'bg'] as const;
+export const LOCALES = ['en', 'de', 'bg'] as const;
 export type Locale = (typeof LOCALES)[number];
 
-const CATALOGUES: Record<Locale, Record<string, string>> = { en, bg };
+const CATALOGUES: Record<Locale, Record<string, string>> = { en, de, bg };
 const STORAGE_KEY = 'avio.locale';
 
 function initialLocale(): Locale {
   const stored = globalThis.localStorage?.getItem(STORAGE_KEY);
   if (stored && (LOCALES as readonly string[]).includes(stored)) return stored as Locale;
   const preferred = globalThis.navigator?.language?.slice(0, 2);
-  return preferred === 'bg' ? 'bg' : 'en';
+  return (LOCALES as readonly string[]).includes(preferred ?? '') ? (preferred as Locale) : 'en';
 }
 
 @Injectable({ providedIn: 'root' })

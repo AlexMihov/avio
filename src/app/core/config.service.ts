@@ -2,7 +2,8 @@ import { Injectable, signal } from '@angular/core';
 
 export interface AppConfig {
   enabledSources: string[];
-  defaultSource: string;
+  /** Selected on first visit, when the address bar names no source. */
+  defaultSources: string[];
   map: { tileUrl: string; attribution: string; maxZoom: number };
   defaultHeightM: number;
   staleAfterDays: number;
@@ -32,8 +33,12 @@ export class ConfigService {
     if (!cfg.enabledSources?.length) {
       throw new Error('no enabledSources configured');
     }
-    if (!cfg.enabledSources.includes(cfg.defaultSource)) {
-      throw new Error(`defaultSource "${cfg.defaultSource}" is not in enabledSources`);
+    if (!cfg.defaultSources?.length) {
+      throw new Error('no defaultSources configured');
+    }
+    const unknown = cfg.defaultSources.filter((id) => !cfg.enabledSources.includes(id));
+    if (unknown.length) {
+      throw new Error(`defaultSources ${unknown.join(', ')} are not in enabledSources`);
     }
     this.value.set(cfg);
   }

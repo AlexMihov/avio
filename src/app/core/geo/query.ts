@@ -30,13 +30,17 @@ export function queryZones(
   when: Date = new Date(),
 ): ZoneMatch[] {
   return zones
-    .filter((z) => heightM >= z.altitude.lower && heightM <= z.altitude.upper)
+    .filter(
+      (z) =>
+        heightM >= z.altitude.lower && (z.altitude.upper === null || heightM <= z.altitude.upper),
+    )
     .filter((z) => activeAt(z, when))
     .filter((z) => containsPoint(z, point))
     .sort(
       (a, b) =>
         STRICTNESS[b.restriction] - STRICTNESS[a.restriction] ||
-        a.altitude.upper - b.altitude.upper,
+        // An unbounded ceiling sorts last: it is the least specific band at this point.
+        (a.altitude.upper ?? Infinity) - (b.altitude.upper ?? Infinity),
     )
     .map((zone) => ({ zone }));
 }

@@ -30,22 +30,20 @@ export class App {
   protected readonly locating = signal(false);
 
   constructor() {
-    if (this.initial.source && this.config.required.enabledSources.includes(this.initial.source)) {
-      void this.zonesService.select(this.initial.source);
-    }
-    // Keep the address bar in step so the current query is always shareable.
+    // The initial selection is resolved during bootstrap, before this component exists, so
+    // the address bar is never rewritten with a source the visitor did not ask for.
     effect(() => {
       const url = buildPermalink({
         point: this.point(),
         heightM: this.heightM(),
-        source: this.zonesService.activeId(),
+        sources: this.zonesService.activeIds(),
       });
       history.replaceState(null, '', url);
     });
   }
 
   protected readonly view = computed(() => {
-    const manifest = this.zonesService.manifest(this.zonesService.activeId());
+    const manifest = this.zonesService.manifest(this.zonesService.activeIds()[0] ?? null);
     return manifest?.defaultView ?? { center: [42.7339, 25.4858] as [number, number], zoom: 7 };
   });
 
@@ -59,9 +57,12 @@ export class App {
     this.point.set(point);
   }
 
-  protected onSourceChanged(sourceId: string): void {
-    this.point.set(null);
-    void this.zonesService.select(sourceId);
+  /**
+   * The picked point survives a country change: a zone from a country the point is not in
+   * simply does not match, so there is nothing to reset.
+   */
+  protected onSourcesChanged(sourceIds: string[]): void {
+    void this.zonesService.select(sourceIds);
   }
 
   protected locate(): void {

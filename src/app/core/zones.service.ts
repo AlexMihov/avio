@@ -2,15 +2,23 @@ import { Injectable, signal } from '@angular/core';
 import type { SourceManifest } from '../../../shared/source';
 import type { NormalizedZone, SourceMeta } from '../../../shared/zone';
 
-/** Loads the mirrored, pre-normalized data for one source. */
+interface Loaded {
+  zones: NormalizedZone[];
+  meta: SourceMeta;
+}
+
+/** Loads the mirrored, pre-normalized data for the selected sources. */
 @Injectable({ providedIn: 'root' })
 export class ZonesService {
   readonly manifests = signal<SourceManifest[]>([]);
-  readonly activeId = signal<string | null>(null);
+  readonly activeIds = signal<string[]>([]);
   readonly zones = signal<NormalizedZone[]>([]);
-  readonly meta = signal<SourceMeta | null>(null);
+  readonly metas = signal<Record<string, SourceMeta>>({});
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
+
+  /** A source stays in memory once fetched, so toggling it back on costs nothing. */
+  private readonly cache = new Map<string, Loaded>();
 
   async loadManifests(): Promise<void> {
     const res = await fetch('data/index.json');
@@ -22,24 +30,46 @@ export class ZonesService {
     return this.manifests().find((m) => m.id === id);
   }
 
-  async select(sourceId: string): Promise<void> {
+  async select(sourceIds: string[]): Promise<void> {
     this.loading.set(true);
     this.error.set(null);
-    try {
-      const [zones, meta] = await Promise.all([
-        fetchJson<NormalizedZone[]>(`data/${sourceId}/zones.json`),
-        fetchJson<SourceMeta>(`data/${sourceId}/meta.json`),
-      ]);
-      this.zones.set(zones);
-      this.meta.set(meta);
-      this.activeId.set(sourceId);
-    } catch (e) {
-      this.error.set(e instanceof Error ? e.message : String(e));
-      this.zones.set([]);
-      this.meta.set(null);
-    } finally {
-      this.loading.set(false);
+
+    const results = await Promise.allSettled(sourceIds.map((id) => this.load(id)));
+    const failures: string[] = [];
+    const zones: NormalizedZone[] = [];
+    const metas: Record<string, SourceMeta> = {};
+    const loaded: string[] = [];
+
+    // One unreachable source must not blank out the others; it is reported and dropped.
+    for (const [i, result] of results.entries()) {
+      const id = sourceIds[i];
+      if (result.status === 'fulfilled') {
+        zones.push(...result.value.zones);
+        metas[id] = result.value.meta;
+        loaded.push(id);
+      } else {
+        failures.push(`${id}: ${result.reason instanceof Error ? result.reason.message : result.reason}`);
+      }
     }
+
+    this.zones.set(zones);
+    this.metas.set(metas);
+    this.activeIds.set(loaded);
+    this.error.set(failures.length ? failures.join('; ') : null);
+    this.loading.set(false);
+  }
+
+  private async load(sourceId: string): Promise<Loaded> {
+    const cached = this.cache.get(sourceId);
+    if (cached) return cached;
+
+    const [zones, meta] = await Promise.all([
+      fetchJson<NormalizedZone[]>(`data/${sourceId}/zones.json`),
+      fetchJson<SourceMeta>(`data/${sourceId}/meta.json`),
+    ]);
+    const entry = { zones, meta };
+    this.cache.set(sourceId, entry);
+    return entry;
   }
 }
 

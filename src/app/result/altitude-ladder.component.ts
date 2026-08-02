@@ -17,9 +17,9 @@ interface Band {
   height: number;
   fill: string;
   label: string;
-  /** Set when the zone's ceiling is above the top of the scale. */
+  /** Set when the zone's ceiling is above the top of the scale, or absent altogether. */
   clippedLabel: string | null;
-  upper: number;
+  upper: number | null;
   lower: number;
 }
 
@@ -161,7 +161,10 @@ export class AltitudeLadderComponent {
    * with their real ceiling.
    */
   private readonly top = computed(() => {
-    const ceilings = this.matches().map((m) => m.zone.altitude.upper);
+    // An unbounded ceiling must not drive the scale — it has no height to scale to.
+    const ceilings = this.matches()
+      .map((m) => m.zone.altitude.upper)
+      .filter((u): u is number => u !== null);
     const relevant = Math.max(150, this.heightM() + 20);
     return Math.min(Math.max(relevant, ...ceilings), Math.max(relevant, 300));
   });
@@ -177,7 +180,7 @@ export class AltitudeLadderComponent {
     const values = new Set<number>([0, top]);
     for (const m of this.matches()) {
       for (const v of [m.zone.altitude.lower, m.zone.altitude.upper]) {
-        if (v <= top) values.add(v);
+        if (v !== null && v <= top) values.add(v);
       }
     }
     const sorted = [...values].sort((a, b) => a - b);
@@ -204,7 +207,9 @@ export class AltitudeLadderComponent {
     const width = Math.min(40, available / matches.length - COL_GAP);
     return matches.map((m, i) => {
       const { lower, upper } = m.zone.altitude;
-      const yTop = this.y(upper);
+      // A zone with no ceiling is drawn to the top of the scale and labelled as open-ended,
+      // which is the same treatment as a clipped band because that is what it is.
+      const yTop = this.y(upper ?? this.top());
       return {
         id: m.zone.id,
         x: AXIS_X + 10 + i * (width + COL_GAP),
@@ -214,7 +219,12 @@ export class AltitudeLadderComponent {
         fill: `var(--${FILL[m.zone.restriction]})`,
         // Bands carry the strip's rank, so a stack of limits maps onto the list below it.
         label: String(i + 1),
-        clippedLabel: upper > this.top() ? `↑${upper}` : null,
+        clippedLabel:
+          upper === null
+            ? `↑${this.i18n.t('strip.noCeiling')}`
+            : upper > this.top()
+              ? `↑${upper}`
+              : null,
         lower,
         upper,
       };
@@ -227,7 +237,12 @@ export class AltitudeLadderComponent {
     this.matches().length === 0
       ? this.i18n.t('ladder.free')
       : this.matches()
-          .map((m) => `${m.zone.name}: ${m.zone.altitude.lower}–${m.zone.altitude.upper} m`)
+          .map(
+            (m) =>
+              `${m.zone.name}: ${m.zone.altitude.lower}–${
+                m.zone.altitude.upper ?? this.i18n.t('strip.noCeiling')
+              } m`,
+          )
           .join('; '),
   );
 }

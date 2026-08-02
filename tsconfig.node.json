@@ -2,6 +2,9 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    // Everything here runs through tsx or vitest. Emitting would drop .js next to each .ts,
+    // and Vite resolves .js first, so a stray build would shadow the real source.
+    "noEmit": true,
     "types": ["node"],
     "module": "esnext",
     "moduleResolution": "bundler",

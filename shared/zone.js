@@ -1,5 +1,0 @@
-export const STRICTNESS = {
-    PROHIBITED: 3,
-    REQ_AUTHORISATION: 2,
-    CONDITIONAL: 1,
-};

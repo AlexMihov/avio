@@ -23,14 +23,13 @@ import type { NormalizedZone } from '../../../shared/zone';
     >
       <header>
         <span class="rank data" aria-hidden="true">{{ rank() }}</span>
-        <h3 class="data">
-          {{ zone().name }}
-          @if (sourceName(); as country) {
-            <span class="origin data">{{ country }}</span>
-          }
-        </h3>
-        <span class="status">{{ i18n.t('verdict.' + zone().restriction) }}</span>
+        <h3 class="data">{{ zone().name }}</h3>
+        @if (sourceName(); as country) {
+          <span class="origin data">{{ country }}</span>
+        }
       </header>
+
+      <p class="status">{{ i18n.t('verdict.' + zone().restriction) }}</p>
 
       <div class="compartments">
         <div class="compartment limits">
@@ -60,15 +59,13 @@ import type { NormalizedZone } from '../../../shared/zone';
         </div>
       </div>
 
-      @if (!zone().applicability.permanent) {
+      @if (temporary(); as window) {
         <p class="temporary data">
-          {{
-            i18n.t('strip.temporary', {
-              start: i18n.formatDate(temporary()!.start),
-              end: i18n.formatDate(temporary()!.end),
-            })
-          }}
+          {{ i18n.t('strip.until', { when: i18n.formatInstant(window.end) }) }}
         </p>
+      } @else {
+        <!-- Saying so beats saying nothing: an absent line reads as missing data. -->
+        <p class="no-expiry">{{ i18n.t('strip.noExpiry') }}</p>
       }
 
       @if (zone().text.source; as source) {
@@ -156,15 +153,15 @@ import type { NormalizedZone } from '../../../shared/zone';
       height: 1.25rem;
       font-size: 0.7rem;
       font-weight: 600;
-      color: var(--paper-2);
-      background: var(--edge);
+      color: var(--ink);
+      border: 1px solid var(--edge);
     }
     header h3 {
       flex: 1;
     }
     .origin {
-      display: inline-block;
-      margin-left: 0.4rem;
+      flex: none;
+      align-self: center;
       padding: 0 0.28rem;
       border: 1px solid var(--rule);
       font-size: 0.65rem;
@@ -179,14 +176,21 @@ import type { NormalizedZone } from '../../../shared/zone';
       font-weight: 600;
       letter-spacing: -0.01em;
     }
+    /* The band is where this strip spends its boldness: one filled block, full width, so the
+       restriction is unmissable and never competes with the zone name for room. */
     .status {
-      color: var(--edge);
+      margin: 0;
+      padding: 0.2rem 0.5rem;
+      background: var(--edge);
+      color: var(--paper-2);
       font-size: 0.7rem;
       font-weight: 700;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      text-align: right;
-      white-space: nowrap;
+    }
+    /* Amber is too light to reverse type out of; amber-on-ink is the caution convention. */
+    .strip[data-restriction='CONDITIONAL'] .status {
+      color: var(--ink);
     }
     .compartments {
       display: grid;
@@ -244,6 +248,11 @@ import type { NormalizedZone } from '../../../shared/zone';
       color: var(--conditional);
       font-size: 0.78rem;
     }
+    /* Standing restrictions are the normal case, so this stays quiet next to a live window. */
+    .no-expiry {
+      color: var(--ink-3);
+      font-size: 0.78rem;
+    }
     details summary {
       cursor: pointer;
     }
@@ -274,6 +283,8 @@ export class ZoneStripComponent {
   readonly zone = input.required<NormalizedZone>();
   /** Position in the strictest-first list; the altitude ladder labels its bands the same way. */
   readonly rank = input.required<number>();
+  /** Set when the result spans several countries and each strip has to say which it is from. */
+  readonly showOrigin = input(false);
   readonly hovered = output<string | null>();
 
   protected readonly reasons = computed(() =>
@@ -282,9 +293,12 @@ export class ZoneStripComponent {
       .join(' · '),
   );
 
-  /** The country a zone came from, shown only when more than one is on the map. */
+  /**
+   * The country a zone came from. The summary names it once for the whole result, so this only
+   * appears when the applicable zones actually span more than one authority.
+   */
   protected readonly sourceName = computed(() => {
-    if (this.zones.activeIds().length < 2) return null;
+    if (!this.showOrigin()) return null;
     const manifest = this.zones.manifest(this.zone().sourceId);
     return manifest ? this.i18n.pick(manifest.names) : this.zone().sourceId;
   });

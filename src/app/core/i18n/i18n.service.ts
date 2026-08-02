@@ -2,12 +2,16 @@ import { Injectable, computed, signal } from '@angular/core';
 import en from './en.json';
 import bg from './bg.json';
 import de from './de.json';
+import { formatAtOffset, offsetLabel, offsetMinutesOf } from '../instant';
 
 export const LOCALES = ['en', 'de', 'bg'] as const;
 export type Locale = (typeof LOCALES)[number];
 
 const CATALOGUES: Record<Locale, Record<string, string>> = { en, de, bg };
 const STORAGE_KEY = 'avio.locale';
+
+/** Aviation reads 24-hour, zero-padded, in every language; h23 keeps midnight as 00, not 24. */
+const CLOCK = { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' } as const;
 
 function initialLocale(): Locale {
   const stored = globalThis.localStorage?.getItem(STORAGE_KEY);
@@ -37,6 +41,21 @@ export class I18nService {
   /** Picks the source's own label for the active locale, falling back to English. */
   pick(values: Record<string, string>): string {
     return values[this.locale()] ?? values['en'] ?? Object.values(values)[0] ?? '';
+  }
+
+  /**
+   * An instant as the authority published it — its own wall clock, with the offset named so
+   * the line reads the same from any timezone.
+   */
+  formatInstant(iso: string): string {
+    const text = formatAtOffset(iso, this.locale(), {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      ...CLOCK,
+    });
+    const label = offsetLabel(offsetMinutesOf(iso));
+    return label ? `${text} ${label}` : text;
   }
 
   formatDate(iso: string): string {

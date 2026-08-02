@@ -2,16 +2,17 @@ import { Component, computed, effect, inject, signal } from '@angular/core';
 import { ConfigService } from './core/config.service';
 import { ZonesService } from './core/zones.service';
 import { I18nService } from './core/i18n/i18n.service';
-import { queryZones } from './core/geo/query';
+import { queryZones, isActiveAt } from './core/geo/query';
 import type { LonLat } from './core/geo/geometry';
 import { buildPermalink, parsePermalink } from './core/permalink';
 import { MapComponent } from './map/map.component';
 import { HeaderComponent } from './shell/header.component';
+import { FooterComponent } from './shell/footer.component';
 import { ResultPanelComponent } from './result/result-panel.component';
 
 @Component({
   selector: 'app-root',
-  imports: [MapComponent, HeaderComponent, ResultPanelComponent],
+  imports: [MapComponent, HeaderComponent, ResultPanelComponent, FooterComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -46,6 +47,14 @@ export class App {
     const manifest = this.zonesService.manifest(this.zonesService.activeIds()[0] ?? null);
     return manifest?.defaultView ?? { center: [42.7339, 25.4858] as [number, number], zoom: 7 };
   });
+
+  /**
+   * The map shows footprints, so it is not filtered by flight height — but it must not draw a
+   * zone that has lapsed, or it contradicts the list beside it.
+   */
+  protected readonly mapZones = computed(() =>
+    this.zonesService.zones().filter((zone) => isActiveAt(zone)),
+  );
 
   protected readonly matches = computed(() => {
     const point = this.point();

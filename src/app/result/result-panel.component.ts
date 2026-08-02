@@ -2,6 +2,7 @@ import { Component, computed, inject, input, output } from '@angular/core';
 import { I18nService } from '../core/i18n/i18n.service';
 import { AltitudeLadderComponent } from './altitude-ladder.component';
 import { ZoneStripComponent } from './zone-strip.component';
+import { ZonesService } from '../core/zones.service';
 import type { ZoneMatch } from '../core/geo/query';
 import type { LonLat } from '../core/geo/geometry';
 
@@ -11,7 +12,27 @@ import type { LonLat } from '../core/geo/geometry';
   template: `
     @if (point(); as p) {
       <section class="verdict" [attr.data-restriction]="headline()">
-        <p class="coords data">{{ p[1].toFixed(5) }}, {{ p[0].toFixed(5) }}</p>
+        <p class="where">
+          <span class="coords data">{{ p[1].toFixed(5) }}, {{ p[0].toFixed(5) }}</span>
+          @if (countries().length) {
+            <!-- A point sits in one country the overwhelming majority of the time, so naming it
+                 once here beats repeating it on every strip. -->
+            <span class="country">
+              @for (country of countries(); track country.id) {
+                <span class="one">
+                  <img
+                    class="flag"
+                    [src]="'flags/' + country.id + '.svg'"
+                    [alt]="''"
+                    width="18"
+                    height="12"
+                  />
+                  <span class="data">{{ country.name }}</span>
+                </span>
+              }
+            </span>
+          }
+        </p>
         <h2>{{ i18n.t('verdict.' + headline()) }}</h2>
         <p class="count">
           {{ countLabel() }} · {{ i18n.t('verdict.at', { height: heightM() }) }}
@@ -25,6 +46,7 @@ import type { LonLat } from '../core/geo/geometry';
             <dz-zone-strip
               [zone]="match.zone"
               [rank]="i + 1"
+              [showOrigin]="countries().length > 1"
               (hovered)="hovered.emit($event)"
             />
           }
@@ -63,11 +85,41 @@ import type { LonLat } from '../core/geo/geometry';
       letter-spacing: -0.02em;
       color: var(--edge);
     }
-    .coords {
+    /* Coordinates left, country right, on one rule-width line above the verdict. */
+    .where {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.75rem;
       margin: 0;
+    }
+    .coords {
       font-size: 0.72rem;
       color: var(--ink-3);
       letter-spacing: 0.02em;
+    }
+    .country {
+      flex: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-2);
+    }
+    .country .one {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    /* A hairline keeps a white-edged flag (Bulgaria, Luxembourg) from bleeding into the paper. */
+    .flag {
+      display: block;
+      width: 1.1rem;
+      height: auto;
+      box-shadow: 0 0 0 1px var(--rule);
     }
     .count {
       margin: 0;
@@ -92,6 +144,7 @@ import type { LonLat } from '../core/geo/geometry';
 })
 export class ResultPanelComponent {
   protected readonly i18n = inject(I18nService);
+  private readonly zones = inject(ZonesService);
 
   readonly matches = input<ZoneMatch[]>([]);
   readonly heightM = input(120);
@@ -100,6 +153,21 @@ export class ResultPanelComponent {
 
   /** The strictest applicable restriction; matches arrive already sorted strictest-first. */
   protected readonly headline = computed(() => this.matches()[0]?.zone.restriction ?? 'clear');
+
+  /**
+   * The countries the applicable zones come from, in strip order. Usually one; more only where
+   * two authorities' zones genuinely overlap, which happens along a border.
+   */
+  protected readonly countries = computed(() => {
+    const seen: { id: string; name: string }[] = [];
+    for (const match of this.matches()) {
+      const id = match.zone.sourceId;
+      if (seen.some((entry) => entry.id === id)) continue;
+      const manifest = this.zones.manifest(id);
+      seen.push({ id, name: manifest ? this.i18n.pick(manifest.names) : id });
+    }
+    return seen;
+  });
 
   protected readonly countLabel = computed(() => {
     const count = this.matches().length;

@@ -29,10 +29,12 @@
   </aside>
 
   <dz-map
-    [zones]="zonesService.zones()"
+    [zones]="mapZones()"
     [highlightedId]="highlightedId()"
     [point]="point()"
     [view]="view()"
     (pointPicked)="onPointPicked($event)"
   />
 </main>
+
+<dz-footer />

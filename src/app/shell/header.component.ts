@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, output } from '@angular/core';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConfigService } from '../core/config.service';
 import { I18nService, LOCALES, type Locale } from '../core/i18n/i18n.service';
@@ -15,11 +15,23 @@ import { ZonesService } from '../core/zones.service';
           <h1>{{ i18n.t('app.title') }}</h1>
           <p>{{ i18n.t('app.subtitle') }}</p>
         </div>
+        <div class="bar">
+          <button
+            type="button"
+            class="disclose"
+            [attr.aria-expanded]="controlsOpen()"
+            aria-controls="query-controls"
+            (click)="controlsOpen.set(!controlsOpen())"
+          >
+            {{ i18n.t('query.controls') }}
+            <span class="chev" aria-hidden="true">{{ controlsOpen() ? '\u2212' : '+' }}</span>
+          </button>
+        </div>
       </div>
 
-      <div class="controls">
+      <div class="controls" id="query-controls" [class.open]="controlsOpen()">
         @if (zones.manifests().length > 1) {
-          <fieldset class="field sources">
+          <fieldset class="field sources collapsible">
             <legend class="compartment-label">{{ i18n.t('source.label') }}</legend>
             <div class="checks">
               @for (manifest of zones.manifests(); track manifest.id) {
@@ -37,7 +49,7 @@ import { ZonesService } from '../core/zones.service';
           </fieldset>
         }
 
-        <label class="field height">
+        <label class="field height collapsible">
           <span class="compartment-label">{{ i18n.t('query.height') }}</span>
           <span class="input-row">
             <input
@@ -53,7 +65,7 @@ import { ZonesService } from '../core/zones.service';
           </span>
         </label>
 
-        <label class="field coords">
+        <label class="field coords collapsible">
           <span class="compartment-label">{{ i18n.t('query.coords') }}</span>
           <span class="input-row">
             <input
@@ -72,7 +84,7 @@ import { ZonesService } from '../core/zones.service';
           {{ locating() ? i18n.t('query.locating') : i18n.t('query.locate') }}
         </button>
 
-        <div class="locales">
+        <div class="locales collapsible">
           @for (locale of locales; track locale) {
             <button
               type="button"
@@ -87,23 +99,6 @@ import { ZonesService } from '../core/zones.service';
         </div>
       </div>
     </header>
-
-    <div class="ribbon">
-      @for (entry of published(); track entry.id) {
-        <span class="published">
-          @if (published().length > 1) {
-            <span class="data who">{{ entry.name }}</span>
-          }
-          <span class="data">{{
-            i18n.t('source.published', { date: i18n.formatDate(entry.publishedAt) })
-          }}</span>
-          <a [href]="entry.sourceUrl" target="_blank" rel="noopener">{{
-            i18n.t('source.official')
-          }}</a>
-        </span>
-      }
-      <span class="disclaimer">{{ i18n.t('disclaimer') }}</span>
-    </div>
 
     @for (entry of stale(); track entry.id) {
       <p class="stale" role="status">
@@ -129,6 +124,20 @@ import { ZonesService } from '../core/zones.service';
       display: flex;
       align-items: center;
       gap: 0.6rem;
+    }
+    /* Only ever shown on a phone, where the header has to collapse to one row. */
+    .bar {
+      display: none;
+      gap: 0.4rem;
+      margin-left: auto;
+    }
+    .disclose {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .chev {
+      font-family: var(--font-data);
     }
     h1 {
       margin: 0;
@@ -244,26 +253,6 @@ import { ZonesService } from '../core/zones.service';
       color: var(--paper-2);
       border-color: var(--ink);
     }
-    .ribbon {
-      display: flex;
-      flex-wrap: wrap;
-      overflow-wrap: anywhere;
-      gap: 0.35rem 1rem;
-      align-items: baseline;
-      padding: 0.3rem 1.1rem;
-      font-size: 0.72rem;
-      color: var(--ink-2);
-      border-bottom: 1px solid var(--rule);
-    }
-    .published {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: baseline;
-      gap: 0.35rem;
-    }
-    .published .who::after {
-      content: ':';
-    }
     .disclaimer {
       color: var(--ink-3);
     }
@@ -287,12 +276,32 @@ import { ZonesService } from '../core/zones.service';
         padding: 0.6rem 0.8rem;
         gap: 0.6rem;
       }
+      .brand {
+        width: 100%;
+      }
       .brand p {
         display: none;
+      }
+      .bar {
+        display: flex;
       }
       .controls {
         width: 100%;
         gap: 0.5rem 0.6rem;
+      }
+      /* Collapsed by default: the query inputs were costing half the screen and the results
+         could not be reached at all. Locating stays one tap away. */
+      .collapsible {
+        display: none;
+      }
+      .controls.open .field {
+        display: grid;
+      }
+      .controls.open .locales {
+        display: flex;
+      }
+      .locate {
+        flex: 1;
       }
       .field.coords {
         flex: 1 1 100%;
@@ -301,9 +310,6 @@ import { ZonesService } from '../core/zones.service';
         flex: 1;
         width: auto;
         min-width: 0;
-      }
-      .locate {
-        flex: 1;
       }
     }
   `,
@@ -323,6 +329,9 @@ export class HeaderComponent {
   readonly sourcesChanged = output<string[]>();
 
   protected typedCoords = '';
+
+  /** Phone only; on wider screens the controls are always laid out and this is ignored. */
+  protected readonly controlsOpen = signal(false);
 
   /** Publication line per selected source, in the order they were selected. */
   protected readonly published = computed(() => {

@@ -13,10 +13,19 @@ function containsPoint(zone: NormalizedZone, p: LonLat): boolean {
     : pointInPolygon(p, zone.geometry.rings);
 }
 
-function activeAt(zone: NormalizedZone, when: Date): boolean {
+/**
+ * Whether the zone is in force at `when`. Exported because the map has to agree with the
+ * result panel: an expired zone drawn on the map but missing from the list is two answers to
+ * one question.
+ */
+export function isActiveAt(zone: NormalizedZone, when: Date = new Date()): boolean {
   if (zone.applicability.permanent) return true;
   const { start, end } = zone.applicability;
-  return new Date(start) <= when && when <= new Date(end);
+  const from = new Date(start);
+  const to = new Date(end);
+  // An unreadable window is treated as in force; hiding a zone needs better evidence.
+  if (Number.isNaN(from.valueOf()) || Number.isNaN(to.valueOf())) return true;
+  return from <= when && when <= to;
 }
 
 /**
@@ -34,7 +43,7 @@ export function queryZones(
       (z) =>
         heightM >= z.altitude.lower && (z.altitude.upper === null || heightM <= z.altitude.upper),
     )
-    .filter((z) => activeAt(z, when))
+    .filter((z) => isActiveAt(z, when))
     .filter((z) => containsPoint(z, point))
     .sort(
       (a, b) =>

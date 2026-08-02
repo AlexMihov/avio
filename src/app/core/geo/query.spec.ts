@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { queryZones } from './query';
+import { queryZones, isActiveAt } from './query';
 import type { NormalizedZone } from '../../../../shared/zone';
 
 function zone(over: Partial<NormalizedZone> = {}): NormalizedZone {
@@ -126,5 +126,34 @@ describe('queryZones', () => {
     });
     expect(queryZones([poly], [23.5, 42.5], 50).map((m) => m.zone.id)).toEqual(['poly']);
     expect(queryZones([poly], [22.5, 42.5], 50)).toHaveLength(0);
+  });
+});
+
+describe('isActiveAt', () => {
+  const now = new Date('2026-08-02T12:00:00Z');
+  const window = (start: string, end: string) =>
+    zone({ applicability: { permanent: false, start, end } });
+
+  it('treats a permanent zone as always in force', () => {
+    expect(isActiveAt(zone(), now)).toBe(true);
+  });
+
+  it('excludes a window that has closed', () => {
+    // A single-day military TSA from months ago must not be drawn as if it still applied.
+    expect(isActiveAt(window('2026-04-08T06:00:00Z', '2026-04-08T15:00:00Z'), now)).toBe(false);
+  });
+
+  it('excludes a window that has not opened yet', () => {
+    expect(isActiveAt(window('2026-09-01T00:00:00Z', '2026-09-02T00:00:00Z'), now)).toBe(false);
+  });
+
+  it('includes a window that is open, including at its edges', () => {
+    expect(isActiveAt(window('2026-08-02T10:00:00Z', '2026-08-02T14:00:00Z'), now)).toBe(true);
+    expect(isActiveAt(window('2026-08-02T12:00:00Z', '2026-08-02T14:00:00Z'), now)).toBe(true);
+    expect(isActiveAt(window('2026-08-02T10:00:00Z', '2026-08-02T12:00:00Z'), now)).toBe(true);
+  });
+
+  it('keeps a zone whose window cannot be read, rather than hiding it', () => {
+    expect(isActiveAt(window('whenever', 'later'), now)).toBe(true);
   });
 });

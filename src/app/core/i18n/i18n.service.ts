@@ -2,14 +2,16 @@ import { Injectable, computed, signal } from '@angular/core';
 import en from './en.json';
 import bg from './bg.json';
 import de from './de.json';
+import fr from './fr.json';
+import it from './it.json';
 import pt from './pt.json';
 import { formatAtOffset, offsetLabel, offsetMinutesOf } from '../instant';
 import { parsePermalink } from '../permalink';
 
-export const LOCALES = ['en', 'de', 'pt', 'bg'] as const;
+export const LOCALES = ['en', 'de', 'fr', 'it', 'pt', 'bg'] as const;
 export type Locale = (typeof LOCALES)[number];
 
-const CATALOGUES: Record<Locale, Record<string, string>> = { en, de, pt, bg };
+const CATALOGUES: Record<Locale, Record<string, string>> = { en, de, fr, it, pt, bg };
 const STORAGE_KEY = 'avio.locale';
 
 /** Aviation reads 24-hour, zero-padded, in every language; h23 keeps midnight as 00, not 24. */

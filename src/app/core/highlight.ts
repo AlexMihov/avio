@@ -11,7 +11,7 @@ export interface Mark {
  * a source might publish in, because this runs over the authority's own words as well as our
  * translations, and the two are rarely the same language.
  */
-const PROHIBITION = String.raw`(?<![\p{L}])(?:prohibit|forbidden|verbot|untersagt|interdit|забранен|забрана)\p{L}*`;
+const PROHIBITION = String.raw`(?<![\p{L}])(?:prohibit|forbidden|verbot|untersagt|interdit|vietat|divieto|proibid|apagorev|απαγορ|keelat|забранен|забрана)\p{L}*`;
 
 const UNIT = String.raw`metres|meters|Metern|Meter|Gramm|grams|gram|kg|km|ft|g|m|кг|км|г|м`;
 const MEASURE = String.raw`\d+(?:[.,]\d+)?\s?(?:${UNIT})(?!\p{L})`;

@@ -2,7 +2,7 @@ import type { SourceManifest } from '../../shared/source';
 
 export const manifest: SourceManifest = {
   id: 'portugal',
-  names: { en: 'Portugal', de: 'Portugal', fr: 'Portugal', bg: 'Португалия', pt: 'Portugal' },
+  names: { en: 'Portugal', de: 'Portugal', fr: 'Portugal', bg: 'Португалия', it: 'Portogallo', pt: 'Portugal' },
   sourceLocale: 'pt',
   // ANAC writes each message in Portuguese and English, in one field, so both are its own.
   officialLocales: ['pt', 'en'],

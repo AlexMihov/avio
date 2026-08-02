@@ -31,6 +31,20 @@ describe('markUp', () => {
     ]);
   });
 
+  it('marks the prohibition in every language a source publishes in', () => {
+    const cases: [string, string][] = [
+      ["L'esercizio di aeromobili è vietato.", 'vietato'],
+      ['Der Betrieb ist verboten', 'verboten'],
+      ["L'exploitation est interdite", 'interdite'],
+      ['todos os voos proibidos na categoria aberta', 'proibidos'],
+      ['Απαγορεύονται οι πτήσεις ΣμηΕΑ', 'Απαγορεύονται'],
+      ['Lennud on keelatud', 'keelatud'],
+    ];
+    for (const [text, expected] of cases) {
+      expect(marked(text)).toEqual([{ kind: 'prohibition', text: expected }]);
+    }
+  });
+
   it('marks german prohibitions', () => {
     expect(marked('Der Betrieb ist verboten')).toEqual([
       { kind: 'prohibition', text: 'verboten' },

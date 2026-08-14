@@ -1,10 +1,10 @@
 {
   "sourceId": "switzerland",
   "sourceUrl": "https://data.geo.admin.ch/ch.bazl.einschraenkungen-drohnen/einschraenkungen-drohnen/einschraenkungen-drohnen_4326.json",
-  "publishedAt": "2026-08-13",
-  "fetchedAt": "2026-08-13T04:55:40.415Z",
+  "publishedAt": "2026-08-14",
+  "fetchedAt": "2026-08-14T04:55:19.202Z",
   "zoneCount": 1303,
-  "checksum": "86c56a7b8a9c9da6e9bce842217bf9b8f7a06f54cd0582a193f5727498226a7f",
+  "checksum": "67353d588a5ad16024cb64e40ddb699442bf3437205d31c04a8511b06f635396",
   "warnings": [
     "CHE-FR157: daily time window is published but not modelled",
     "CHE-FR184: daily time window is published but not modelled",

@@ -80,8 +80,8 @@ language, whether anything applied, and the position rounded to a tenth of a deg
 11 km, enough for "people are checking around Zürich" and not enough to identify a site.
 
 If `map.tileUrl` contains `{lang}`, it is filled with the active UI locale and the basemap is
-relaid when the language changes. The default CARTO basemap ignores language and is served
-without it; localised labels need a provider that supports them.
+relaid when the language changes. The default OpenStreetMap basemap ignores language and is
+served without it; localised labels need a provider that supports them.
 
 ## Self-hosting
 
@@ -145,4 +145,4 @@ release carries FOCA's own German, French and Italian wording, so the build read
 joins them on the zone identifier. All four languages are the authority's, none is a
 translation of ours, and the strip labels them accordingly.
 
-Basemap © OpenStreetMap contributors, © CARTO.
+Basemap © OpenStreetMap contributors.

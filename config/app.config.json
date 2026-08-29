@@ -2,8 +2,8 @@
   "enabledSources": ["bulgaria", "cyprus", "estonia", "ireland", "luxembourg", "portugal", "switzerland"],
   "defaultSources": ["switzerland"],
   "map": {
-    "tileUrl": "https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-    "attribution": "&copy; OpenStreetMap contributors &copy; CARTO",
+    "tileUrl": "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+    "attribution": "&copy; OpenStreetMap contributors",
     "maxZoom": 19
   },
   "defaultHeightM": 120,

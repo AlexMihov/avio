@@ -1,13 +1,50 @@
-# Avio
+<h1 align="center">Avio</h1>
 
-Official UAS geographical zones on a map you can actually use. Pick a point, enter the
-height you intend to fly at, and see every zone that applies — with the authority's own
-text, the vertical limits, and who to contact for permission.
+<p align="center">
+  <strong>Official UAS geographical zones on a map you can actually use.</strong><br/>
+  Pick a point, enter the height you intend to fly at, and see every zone that applies —
+  with the authority's own text, the vertical limits, and who to contact for permission.
+</p>
+
+<p align="center">
+  <a href="https://alexmihov.github.io/avio/"><strong>Open the map →</strong></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/AlexMihov/avio/actions/workflows/deploy.yml"><img alt="Deploy" src="https://github.com/AlexMihov/avio/actions/workflows/deploy.yml/badge.svg"></a>
+  <a href="https://github.com/AlexMihov/avio/actions/workflows/refresh-data.yml"><img alt="Zone data refresh" src="https://github.com/AlexMihov/avio/actions/workflows/refresh-data.yml/badge.svg"></a>
+  <img alt="Zones" src="https://img.shields.io/badge/zones-3%2C378-0b7285">
+  <img alt="Countries" src="https://img.shields.io/badge/countries-8-0b7285">
+  <img alt="Languages" src="https://img.shields.io/badge/languages-6-0b7285">
+  <a href="LICENSE"><img alt="License: CC BY-NC 4.0" src="https://img.shields.io/badge/license-CC%20BY--NC%204.0-blue"></a>
+</p>
+
+> [!WARNING]
+> **This is an unofficial tool. Always verify against the official publication before flying.**
+
+> [!NOTE]
+> Free for non-commercial use under [CC BY-NC 4.0](LICENSE) — credit Alex Mihov and link back.
+> For commercial use, get in touch.
+
+## Coverage
+
+| Country        | Authority                      | Published as                      | Zones |
+| -------------- | ------------------------------ | --------------------------------- | ----: |
+| 🇧🇬 Bulgaria    | ГД ГВА                         | ED-269, zip behind a scraped link |   881 |
+| 🇨🇾 Cyprus      | Τμήμα Πολιτικής Αεροπορίας     | ED-269, date-stamped file         |   141 |
+| 🇪🇪 Estonia     | Transpordiamet / EANS          | GeoJSON with ED-269 properties    |   245 |
+| 🇮🇪 Ireland     | Irish Aviation Authority       | GeoJSON, ED-269 semantics         |    87 |
+| 🇱🇺 Luxembourg  | Direction de l'Aviation Civile | ED-269, CC0                       |    47 |
+| 🇵🇹 Portugal    | ANAC                           | ED-269 behind a map viewer        |   385 |
+| 🇸🇪 Sweden      | Transportstyrelsen + LFV       | ED-318 **and** a WFS              |   298 |
+| 🇨🇭 Switzerland | BAZL / FOCA                    | ED-269 + GeoPackage, via STAC     | 1,294 |
+
+Eight authorities, six wire formats, one zone model. The interface reads in English, German,
+French, Italian, Portuguese and Bulgarian, and every zone keeps the authority's own wording
+alongside it.
 
 Bulgaria was the first source, because the Civil Aviation Administration publishes the data
 as an ED-269 JSON file but offers no usable public map. Switzerland followed.
-
-**This is an unofficial tool. Always verify against the official publication before flying.**
 
 ## How it works
 
@@ -43,7 +80,16 @@ rebuilding:
 
 ```json
 {
-  "enabledSources": ["bulgaria", "cyprus", "estonia", "ireland", "luxembourg", "portugal", "switzerland"],
+  "enabledSources": [
+    "bulgaria",
+    "cyprus",
+    "estonia",
+    "ireland",
+    "luxembourg",
+    "portugal",
+    "sweden",
+    "switzerland"
+  ],
   "defaultSources": ["switzerland"],
   "map": { "tileUrl": "...", "attribution": "...", "maxZoom": 19 },
   "defaultHeightM": 120,
@@ -71,7 +117,7 @@ being checked — never reaches Google. Declining loads nothing from Google at a
 **One setting has to be changed in Google Analytics itself.** Enhanced measurement raises its
 own `page_view` whenever the address bar changes, reading `location.href` directly, and no
 value passed to `gtag` overrides it. Since this app keeps the query in the address bar, that
-event would carry the coordinates. Turn it off under Admin → Data streams → *your stream* →
+event would carry the coordinates. Turn it off under Admin → Data streams → _your stream_ →
 Enhanced measurement → the gear icon → uncheck **Page changes based on browser history
 events**. The app sends its own sanitised `page_view` instead, so nothing is lost.
 
@@ -137,6 +183,22 @@ the data file of its own map viewer, writes both Portuguese and English into one
 field, and states three nature-reserve ceilings in feet, which the build converts. **The terms of reuse
 are unconfirmed — ANAC has been asked and has not yet replied.**
 
+Sweden: Transportstyrelsen and Luftfartsverket (LFV) —
+[Dronechart](https://daim.lfv.se/echarts/dronechart/), CC BY 4.0. The only source that needs
+two upstreams. Transportstyrelsen publishes 62 Article 15 zones as ED-318, bilingual and
+well-formed, but the controlled airspace a Swedish pilot also needs permission for is not in
+it, and LFV has confirmed it never will be: control zones, traffic information zones,
+aerodrome traffic zones, restricted areas and danger areas come from LFV's WFS instead, and
+converting them is left to the reader. Publishing the ED-318 file alone would answer "no zones
+here" next to Arlanda, so the build fetches both and merges them.
+
+Following LFV's own drone chart, an area is kept when its floor is at or below 500 ft above
+sea level; limits are published in feet and converted. The WFS carries no remark for a
+control, traffic information or traffic zone, so the build reproduces the standing rule LFV's
+chart states for each — including the drop from 50 m to 10 m in the control zones with heavy
+military traffic — in LFV's own Swedish and English. Areas across the border that appear in
+the Swedish AIP are left to their own country.
+
 Switzerland: Federal Office of Civil Aviation (BAZL/FOCA) —
 [Geographical UAS zones of Switzerland](https://opendata.swiss/en/dataset/geografische-uas-gebiete-der-schweiz),
 published as ED-269 via the geo.admin.ch STAC API under Opendata BY, which requires the
@@ -146,3 +208,13 @@ joins them on the zone identifier. All four languages are the authority's, none 
 translation of ours, and the strip labels them accordingly.
 
 Basemap © OpenStreetMap contributors.
+
+## Licence
+
+The code is [CC BY-NC 4.0](LICENSE): use it, fork it, run your own copy — for anything
+non-commercial, and name Alex Mihov with a link back to this repository. For commercial use,
+ask.
+
+The zone data is a separate matter and is not mine to license. Each authority's terms travel
+with its data — CC BY 4.0, CC0, Opendata BY — and every source is credited above. Portugal's
+terms are still unconfirmed.

@@ -1,5 +1,5 @@
 {
-  "enabledSources": ["bulgaria", "cyprus", "estonia", "ireland", "luxembourg", "portugal", "switzerland"],
+  "enabledSources": ["bulgaria", "cyprus", "estonia", "ireland", "luxembourg", "portugal", "sweden", "switzerland"],
   "defaultSources": ["switzerland"],
   "map": {
     "tileUrl": "https://tile.openstreetmap.org/{z}/{x}/{y}.png",

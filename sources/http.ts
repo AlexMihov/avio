@@ -14,14 +14,25 @@ export const USER_AGENT =
   'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) ' +
   'Chrome/126.0.0.0 Safari/537.36';
 
-export function request(url: string, init: RequestInit = {}): Promise<Response> {
-  return fetch(url, {
-    ...init,
-    headers: {
-      'User-Agent': USER_AGENT,
-      Accept: '*/*',
-      'Accept-Language': 'en,*;q=0.5',
-      ...init.headers,
-    },
-  });
+/**
+ * Cloudflare in front of Bulgaria's CAA answers datacentre addresses with 403 no matter what
+ * the request looks like, so the scheduled refresh cannot reach the page that carries the
+ * current zip link while a laptop can. Jina's reader fetches the page from its own network and
+ * returns it verbatim when asked for html, which is enough to get past that one block.
+ *
+ * It only runs after a real 403 and only for pages: the reader answers 422 for binary content,
+ * which surfaces as an ordinary failed response.
+ */
+const READER = 'https://r.jina.ai/';
+
+export async function request(url: string, init: RequestInit = {}): Promise<Response> {
+  const headers = {
+    'User-Agent': USER_AGENT,
+    Accept: '*/*',
+    'Accept-Language': 'en,*;q=0.5',
+    ...init.headers,
+  };
+  const response = await fetch(url, { ...init, headers });
+  if (response.status !== 403) return response;
+  return fetch(READER + url, { ...init, headers: { ...headers, 'x-respond-with': 'html' } });
 }

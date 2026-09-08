@@ -11,6 +11,10 @@
 </p>
 
 <p align="center">
+  <a href="https://buymeacoffee.com/mihov"><img alt="Buy me a beer" height="40" src="https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20beer&emoji=%F0%9F%8D%BA&slug=mihov&button_colour=000000&font_colour=ffffff&font_family=Bree&outline_colour=ffffff&coffee_colour=FFDD00"></a>
+</p>
+
+<p align="center">
   <a href="https://github.com/AlexMihov/avio/actions/workflows/deploy.yml"><img alt="Deploy" src="https://github.com/AlexMihov/avio/actions/workflows/deploy.yml/badge.svg"></a>
   <a href="https://github.com/AlexMihov/avio/actions/workflows/refresh-data.yml"><img alt="Zone data refresh" src="https://github.com/AlexMihov/avio/actions/workflows/refresh-data.yml/badge.svg"></a>
   <img alt="Zones" src="https://img.shields.io/badge/zones-3%2C378-0b7285">

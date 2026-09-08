@@ -34,6 +34,12 @@ import { ZonesService } from '../core/zones.service';
           <span class="out" aria-hidden="true">↗</span>
         </a>
       }
+      <!-- AGPL-3.0 expects anyone using this over the network to be told where the source is,
+           and nothing else on the page says who made it. -->
+      <a class="repo" href="https://github.com/AlexMihov/avio" target="_blank" rel="noopener">
+        Avio by Alex Mihov
+        <span class="out" aria-hidden="true">↗</span>
+      </a>
       <span class="disclaimer">{{ i18n.t('disclaimer') }}</span>
     </footer>
   `,
@@ -59,6 +65,18 @@ import { ZonesService } from '../core/zones.service';
     }
     .source:hover .who,
     .source:focus-visible .who {
+      text-decoration: underline;
+    }
+    .repo {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: var(--ink-2);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .repo:hover,
+    .repo:focus-visible {
       text-decoration: underline;
     }
     .when {

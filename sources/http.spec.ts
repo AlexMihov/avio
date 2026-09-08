@@ -25,7 +25,7 @@ describe('request', () => {
 
     expect(response.status).toBe(200);
     expect(fetchMock.mock.calls[1][0]).toBe('https://r.jina.ai/https://example.test/page');
-    expect(fetchMock.mock.calls[1][1].headers['x-respond-with']).toBe('html');
+    expect(fetchMock.mock.calls[1][1].headers).toEqual({ 'x-respond-with': 'html' });
   });
 
   it('does not retry other failures', async () => {

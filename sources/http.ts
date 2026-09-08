@@ -21,7 +21,9 @@ export const USER_AGENT =
  * returns it verbatim when asked for html, which is enough to get past that one block.
  *
  * It only runs after a real 403 and only for pages: the reader answers 422 for binary content,
- * which surfaces as an ordinary failed response.
+ * which surfaces as an ordinary failed response. None of our own headers are forwarded — the
+ * reader passes a browser user-agent of its own straight through, and Cloudflare challenges
+ * that combination while it serves the reader's default request fine.
  */
 const READER = 'https://r.jina.ai/';
 
@@ -34,5 +36,5 @@ export async function request(url: string, init: RequestInit = {}): Promise<Resp
   };
   const response = await fetch(url, { ...init, headers });
   if (response.status !== 403) return response;
-  return fetch(READER + url, { ...init, headers: { ...headers, 'x-respond-with': 'html' } });
+  return fetch(READER + url, { ...init, headers: { 'x-respond-with': 'html' } });
 }

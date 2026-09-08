@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { CONNECTORS } from '../sources/registry';
-import type { SourceManifest } from '../shared/source';
+import { SourceUnreachable, type SourceManifest } from '../shared/source';
 import type { SourceMeta } from '../shared/zone';
 import { expiryWarnings } from './expiry';
 
@@ -26,12 +26,24 @@ for (const id of config.enabledSources as string[]) {
     // An authority that is down, blocking us, or has restructured its page must not stop the
     // rest of the mirror refreshing. The previously published data for this source stays in
     // place, its fetchedAt ages, and the app's own staleness banner eventually says so.
+    manifests.push(connector.manifest);
+    if (unreachableButUnchanged(id, error)) {
+      console.log(`${id}: unreachable from here; the published link is the one we mirror, kept`);
+      continue;
+    }
     failed.push(`${id}: ${error instanceof Error ? error.message : error}`);
     const previous = existsSync(`public/data/${id}/meta.json`);
     console.error(`${id}: FAILED — ${error instanceof Error ? error.message : error}`);
     console.error(`  ${previous ? 'keeping the previously published data' : 'no previous data to keep'}`);
-    manifests.push(connector.manifest);
   }
+}
+
+function unreachableButUnchanged(id: string, error: unknown): boolean {
+  if (!(error instanceof SourceUnreachable)) return false;
+  const metaPath = `public/data/${id}/meta.json`;
+  if (!existsSync(metaPath)) return false;
+  const prev: SourceMeta = JSON.parse(readFileSync(metaPath, 'utf8'));
+  return prev.sourceUrl === error.sourceUrl;
 }
 
 async function build(id: string, connector: (typeof CONNECTORS)[string]): Promise<void> {

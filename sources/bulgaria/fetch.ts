@@ -2,6 +2,7 @@ import { request } from '../http';
 
 import JSZip from 'jszip';
 import { manifest } from './manifest';
+import { SourceUnreachable } from '../../shared/source';
 
 const ORIGIN = 'https://www.caa.bg';
 
@@ -28,8 +29,11 @@ export async function fetchZones(): Promise<{
   const sourceUrl = href.startsWith('http') ? href : ORIGIN + href;
   const publishedAt = `${yyyy}-${mm}-${dd}`;
 
+  // Cloudflare serves the zip to a browser and to most networks, but not to GitHub's runners,
+  // and no reader can relay binary content. Reporting the link we could not follow lets the
+  // build tell "still the file we already have" apart from "they published something new".
   const buf = await request(sourceUrl).then((r) => {
-    if (!r.ok) throw new Error(`zip download returned ${r.status}`);
+    if (!r.ok) throw new SourceUnreachable(sourceUrl, `zip download returned ${r.status}`);
     return r.arrayBuffer();
   });
 

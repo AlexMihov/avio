@@ -1,0 +1,14 @@
+Avio — official UAS geographical zones on a map you can actually use.
+
+Copyright (c) 2026 Alex Mihov
+https://github.com/AlexMihov/avio
+
+Licensed under the GNU Affero General Public License v3.0. See LICENSE.
+
+If you run Avio, or anything built from it, a visible credit — "Based on Avio by
+Alex Mihov", linking to the repository — is asked for rather than required, and is
+much appreciated.
+
+The zone data is not covered by this licence. Each authority publishes under its own
+terms (CC BY 4.0, CC0, Opendata BY, and others); those terms travel with the data and
+every source is credited in README.md.

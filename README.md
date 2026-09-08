@@ -16,15 +16,16 @@
   <img alt="Zones" src="https://img.shields.io/badge/zones-3%2C378-0b7285">
   <img alt="Countries" src="https://img.shields.io/badge/countries-8-0b7285">
   <img alt="Languages" src="https://img.shields.io/badge/languages-6-0b7285">
-  <a href="LICENSE"><img alt="License: CC BY-NC 4.0" src="https://img.shields.io/badge/license-CC%20BY--NC%204.0-blue"></a>
+  <a href="LICENSE"><img alt="License: AGPL-3.0" src="https://img.shields.io/badge/license-AGPL--3.0-blue"></a>
 </p>
 
 > [!WARNING]
 > **This is an unofficial tool. Always verify against the official publication before flying.**
 
 > [!NOTE]
-> Free for non-commercial use under [CC BY-NC 4.0](LICENSE) — credit Alex Mihov and link back.
-> For commercial use, get in touch.
+> Open source under [AGPL-3.0](LICENSE). Run it, fork it, build on it — if you deploy a
+> modified version, publish your source too. A visible "Based on Avio by Alex Mihov" is
+> asked for rather than required, and appreciated.
 
 ## Coverage
 
@@ -211,9 +212,10 @@ Basemap © OpenStreetMap contributors.
 
 ## Licence
 
-The code is [CC BY-NC 4.0](LICENSE): use it, fork it, run your own copy — for anything
-non-commercial, and name Alex Mihov with a link back to this repository. For commercial use,
-ask.
+The code is [AGPL-3.0](LICENSE), copyright Alex Mihov. Use it, fork it, run your own copy,
+commercially or not — the one condition is that anyone who deploys a modified version has to
+make their source available under the same terms. [NOTICE](NOTICE) also asks, without
+requiring it, for a visible credit back to this repository.
 
 The zone data is a separate matter and is not mine to license. Each authority's terms travel
 with its data — CC BY 4.0, CC0, Opendata BY — and every source is credited above. Portugal's

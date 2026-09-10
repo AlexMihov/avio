@@ -2,9 +2,9 @@
   "sourceId": "sweden",
   "sourceUrl": "https://daim.lfv.se/echarts/dronechart/data/uas_zones_ED318.json",
   "publishedAt": "2026-09-03",
-  "fetchedAt": "2026-09-09T04:30:28.902Z",
+  "fetchedAt": "2026-09-10T04:33:10.956Z",
   "zoneCount": 298,
-  "checksum": "961bb4e142fb108c5441933fa0a39d4467badc92016010390b59c02db804df0c",
+  "checksum": "3ee032423ed30647649af36e574a674b0ab214e8162d04bb477f08f222252d47",
   "warnings": [
     "SWE-ESU208: weekly time window is published but not modelled",
     "SWE-ESU209: mixed vertical references (AGL/AMSL)",

@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { CONNECTORS } from '../sources/registry';
 import { SourceUnreachable, type SourceManifest } from '../shared/source';
 import type { SourceMeta } from '../shared/zone';
@@ -93,6 +93,27 @@ writeFileSync('public/data/index.json', JSON.stringify(manifests, null, 2) + '\n
 if (failed.length) {
   console.error(`\n${failed.length} of ${config.enabledSources.length} sources failed:`);
   for (const f of failed) console.error(`  ${f}`);
+  reportToGithub(failed);
   // Everything that did refresh has been written; the non-zero exit keeps the job red.
   process.exitCode = 1;
+}
+
+/**
+ * A red run whose only clue is "see the npm run data step" costs a log dig every morning.
+ * An annotation puts the reason on the run page and in the notification mail; the summary
+ * repeats it in full underneath.
+ */
+function reportToGithub(reasons: string[]): void {
+  if (!process.env['GITHUB_ACTIONS']) return;
+  for (const reason of reasons) {
+    console.error(`::error title=Source refresh failed::${reason.replace(/\n/g, ' ')}`);
+  }
+  const summary = process.env['GITHUB_STEP_SUMMARY'];
+  if (!summary) return;
+  appendFileSync(
+    summary,
+    `## ${reasons.length} of ${config.enabledSources.length} sources failed to refresh\n\n` +
+      reasons.map((r) => `- ${r}\n`).join('') +
+      `\nEvery other source published normally and was committed.\n`,
+  );
 }

@@ -36,5 +36,11 @@ export async function request(url: string, init: RequestInit = {}): Promise<Resp
   };
   const response = await fetch(url, { ...init, headers });
   if (response.status !== 403) return response;
-  return fetch(READER + url, { ...init, headers: { 'x-respond-with': 'html' } });
+  const relayed = await fetch(READER + url, { ...init, headers: { 'x-respond-with': 'html' } });
+  if (!relayed.ok) {
+    // Without this line the connector only reports the relay's status, and a 422 from a
+    // reader asked for a zip reads like the authority broke something.
+    console.error(`  note: ${url} answered 403; the r.jina.ai relay then returned ${relayed.status}`);
+  }
+  return relayed;
 }

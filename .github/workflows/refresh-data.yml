@@ -51,5 +51,5 @@ jobs:
       - name: Fail if any source could not be refreshed
         if: steps.data.outcome == 'failure'
         run: |
-          echo "At least one source failed to refresh; see the 'npm run data' step." >&2
+          echo "At least one source failed to refresh; the reason is in the job summary and the error annotations above." >&2
           exit 1

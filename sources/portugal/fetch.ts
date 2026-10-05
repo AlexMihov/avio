@@ -1,26 +1,21 @@
 import { request } from '../http';
 
-const ZONES_URL = 'https://dnt.anac.pt/mapa_UASZoneVersion.js';
+const ZONES_URL = 'https://dnt.anac.pt/index.php?action=download-json-ed269';
 
 /**
- * ANAC serves its ED-269 document as the data file of its own map viewer: JavaScript that
- * assigns `data = {…}` rather than JSON. There is no `.json` or `.kml` sibling at this host —
- * the documented downloads sit behind the operator login — so the assignment is stripped here
- * and the rest is parsed as the ED-269 document it is.
+ * ANAC's map viewer links its ED-269 document as a public download. Until late September 2026
+ * the only public copy was the viewer's own `mapa_UASZoneVersion.js`, which the redesigned
+ * site replaced with an HTML page.
  */
 export async function fetchZones(): Promise<{
   raw: string;
   sourceUrl: string;
   publishedAt: string;
 }> {
-  const script = await request(ZONES_URL).then((r) => {
+  const raw = await request(ZONES_URL).then((r) => {
     if (!r.ok) throw new Error(`zone download returned ${r.status}`);
     return r.text();
   });
-
-  const start = script.indexOf('{');
-  if (start === -1) throw new Error('no JSON object in the zone script');
-  const raw = script.slice(start).replace(/;\s*$/, '').trim();
 
   const doc = JSON.parse(raw);
   return { raw, sourceUrl: ZONES_URL, publishedAt: publishedAtFrom(doc?.description) };

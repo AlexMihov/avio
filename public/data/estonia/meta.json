@@ -2,11 +2,11 @@
   "sourceId": "estonia",
   "sourceUrl": "https://utm.eans.ee/avm/utm/uas.geojson",
   "publishedAt": "2026-10-16",
-  "fetchedAt": "2026-10-16T09:01:35.015Z",
-  "zoneCount": 247,
-  "checksum": "565eaee3e3cf956336b065221acd5b3e4f9508b4b6ece6419fc6ea0b1fe0e660",
+  "fetchedAt": "2026-10-17T08:33:42.949Z",
+  "zoneCount": 246,
+  "checksum": "016059bf1a30b406f6b47e8ad8013a5ab75634eb1a289d4aea949624201b0d17",
   "warnings": [
     "EST-EERZout: covers the whole globe, treated as an out-of-jurisdiction notice",
-    "72 of 247 zones expire within 120 days, 22 of them on 2026-11-30; check whether the authority has republished"
+    "71 of 246 zones expire within 120 days, 22 of them on 2026-11-30; check whether the authority has republished"
   ]
 }

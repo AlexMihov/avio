@@ -24,6 +24,10 @@ export const USER_AGENT =
  * which surfaces as an ordinary failed response. None of our own headers are forwarded — the
  * reader passes a browser user-agent of its own straight through, and Cloudflare challenges
  * that combination while it serves the reader's default request fine.
+ *
+ * JSON is asked for as text: in html mode the reader wraps it in Chrome's JSON viewer page,
+ * which is how Cyprus's zone file reached the parser as `<html><head>…` once drones.gov.cy
+ * started answering runners with 403 too.
  */
 const READER = 'https://r.jina.ai/';
 
@@ -36,7 +40,8 @@ export async function request(url: string, init: RequestInit = {}): Promise<Resp
   };
   const response = await fetch(url, { ...init, headers });
   if (response.status !== 403) return response;
-  const relayed = await fetch(READER + url, { ...init, headers: { 'x-respond-with': 'html' } });
+  const respondWith = new URL(url).pathname.endsWith('.json') ? 'text' : 'html';
+  const relayed = await fetch(READER + url, { ...init, headers: { 'x-respond-with': respondWith } });
   if (!relayed.ok) {
     // Without this line the connector only reports the relay's status, and a 422 from a
     // reader asked for a zip reads like the authority broke something.

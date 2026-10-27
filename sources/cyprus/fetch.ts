@@ -11,13 +11,13 @@ export async function fetchZones(): Promise<{
   sourceUrl: string;
   publishedAt: string;
 }> {
-  const page = await request(manifest.officialUrl).then((r) => {
+  const match = await retry(async () => {
+    const r = await request(manifest.officialUrl);
     if (!r.ok) throw new Error(`geo-zones page returned ${r.status}`);
-    return r.text();
+    const link = (await r.text()).match(/href="([^"]+\.json[^"]*)"/i);
+    if (!link) throw new Error('no .json link found on the DCA geo-zones page');
+    return link;
   });
-
-  const match = page.match(/href="([^"]+\.json[^"]*)"/i);
-  if (!match) throw new Error('no .json link found on the DCA geo-zones page');
   const sourceUrl = new URL(match[1], manifest.officialUrl).toString();
 
   const [raw, zones] = await retry(async () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { request } from './http';
+import { request, retry } from './http';
 
 afterEach(() => vi.unstubAllGlobals());
 
@@ -34,5 +34,21 @@ describe('request', () => {
 
     expect((await request('https://example.test/page')).status).toBe(404);
     expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('retry', () => {
+  it('returns the first attempt that succeeds', async () => {
+    const attempt = vi.fn().mockRejectedValueOnce(new Error('challenge page')).mockResolvedValueOnce('json');
+
+    expect(await retry(attempt, 4, 0)).toBe('json');
+    expect(attempt).toHaveBeenCalledTimes(2);
+  });
+
+  it('throws the last error once every attempt failed', async () => {
+    const attempt = vi.fn().mockRejectedValue(new Error('400'));
+
+    await expect(retry(attempt, 3, 0)).rejects.toThrow('400');
+    expect(attempt).toHaveBeenCalledTimes(3);
   });
 });

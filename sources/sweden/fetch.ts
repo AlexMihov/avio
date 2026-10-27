@@ -1,4 +1,4 @@
-import { request } from '../http';
+import { request, retry } from '../http';
 
 const ED318_URL = 'https://daim.lfv.se/echarts/dronechart/data/uas_zones_ED318.json';
 const WFS = 'https://daim.lfv.se/geoserver/wfs';
@@ -22,20 +22,24 @@ export async function fetchZones(): Promise<{
   sourceUrl: string;
   publishedAt: string;
 }> {
-  const ed318 = await request(ED318_URL).then((r) => {
-    if (!r.ok) throw new Error(`ED-318 download returned ${r.status}`);
-    return r.json();
-  });
+  const ed318 = await retry(() =>
+    request(ED318_URL).then((r) => {
+      if (!r.ok) throw new Error(`ED-318 download returned ${r.status}`);
+      return r.json();
+    }),
+  );
 
   const airspace: Record<string, { features?: { properties?: Record<string, unknown> }[] }> = {};
   for (const layer of AIRSPACE_LAYERS) {
     const url =
       `${WFS}?service=WFS&version=2.0.0&request=GetFeature` +
       `&typeNames=mais:${layer}&outputFormat=application/json&srsName=EPSG:4326`;
-    airspace[layer] = await request(url).then((r) => {
-      if (!r.ok) throw new Error(`${layer} download returned ${r.status}`);
-      return r.json();
-    });
+    airspace[layer] = await retry(() =>
+      request(url).then((r) => {
+        if (!r.ok) throw new Error(`${layer} download returned ${r.status}`);
+        return r.json();
+      }),
+    );
   }
 
   return {

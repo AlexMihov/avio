@@ -1,5 +1,5 @@
 import { manifest } from './manifest';
-import { request } from '../http';
+import { request, retry } from '../http';
 
 /**
  * The DCA links a date-stamped JSON from its geo-zones page, so the current file has to be
@@ -20,12 +20,14 @@ export async function fetchZones(): Promise<{
   if (!match) throw new Error('no .json link found on the DCA geo-zones page');
   const sourceUrl = new URL(match[1], manifest.officialUrl).toString();
 
-  const raw = await request(sourceUrl).then((r) => {
+  const [raw, zones] = await retry(async () => {
+    const r = await request(sourceUrl);
     if (!r.ok) throw new Error(`zone download returned ${r.status}`);
-    return r.text();
+    const text = await r.text();
+    return [text, JSON.parse(text)] as const;
   });
 
-  return { raw, sourceUrl, publishedAt: publishedAtFrom(JSON.parse(raw)?.title) };
+  return { raw, sourceUrl, publishedAt: publishedAtFrom(zones?.title) };
 }
 
 /** `CYPZoneVersion DD-MM-YYYY` is the only date the DCA publishes. */

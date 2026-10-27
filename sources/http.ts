@@ -49,3 +49,20 @@ export async function request(url: string, init: RequestInit = {}): Promise<Resp
   }
   return relayed;
 }
+
+/**
+ * Some upstreams fail one request in a few and answer the next: Cyprus's relayed zone file
+ * comes back as a "Checking the site connection security" page about half the time, and LFV's
+ * WFS once answered a single layer with 400 from a runner while every retry succeeded. A daily
+ * refresh can afford to wait a few seconds rather than keep yesterday's data.
+ */
+export async function retry<T>(attempt: () => Promise<T>, tries = 4, delayMs = 5000): Promise<T> {
+  for (let i = 1; ; i++) {
+    try {
+      return await attempt();
+    } catch (error) {
+      if (i >= tries) throw error;
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+    }
+  }
+}

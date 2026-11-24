@@ -1,19 +1,16 @@
 {
   "sourceId": "ireland",
-  "sourceUrl": "https://www.iaa.ie/docs/default-source/default-document-library/uas/20261118_uas_zones_ireland_v1.geojson?sfvrsn=f9d5eff3_263&download=true",
-  "publishedAt": "2026-11-18",
-  "fetchedAt": "2026-11-23T14:39:21.036Z",
-  "zoneCount": 85,
-  "checksum": "146998864dc5cb0da224f1d9a9b1196c6cea838cc9e0b2a27d8332308a9ee279",
+  "sourceUrl": "https://www.iaa.ie/docs/default-source/default-document-library/uas/20261124_uas_zones_ireland_v1.geojson?sfvrsn=f9d5eff3_268&download=true",
+  "publishedAt": "2026-11-24",
+  "fetchedAt": "2026-11-24T14:53:15.627Z",
+  "zoneCount": 82,
+  "checksum": "22feb8998e8205803045c21385a633522e7a57462973cfecfe635c7ae97b4b78",
   "warnings": [
     "IRL-T1: 8 applicability windows, listed as a condition",
-    "IRL-T4: 1 applicability windows, listed as a condition",
     "IRL-T30: 1 applicability windows, listed as a condition",
     "IRL-T52_A: 1 applicability windows, listed as a condition",
     "IRL-T52_B: 1 applicability windows, listed as a condition",
-    "IRL-T74: 1 applicability windows, listed as a condition",
-    "IRL-T75: 1 applicability windows, listed as a condition",
-    "IRL-T76: 1 applicability windows, listed as a condition",
-    "IRL-T77: 1 applicability windows, listed as a condition"
+    "IRL-T77: 1 applicability windows, listed as a condition",
+    "IRL-T78: 1 applicability windows, listed as a condition"
   ]
 }

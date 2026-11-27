@@ -1,10 +1,10 @@
 {
   "sourceId": "estonia",
   "sourceUrl": "https://utm.eans.ee/avm/utm/uas.geojson",
-  "publishedAt": "2026-11-26",
-  "fetchedAt": "2026-11-26T13:54:43.820Z",
+  "publishedAt": "2026-11-27",
+  "fetchedAt": "2026-11-27T13:51:57.276Z",
   "zoneCount": 232,
-  "checksum": "450ddf81053db825e8709a8275755af85134d25bf23a8e6c132447304d0c5405",
+  "checksum": "10e382b5977059b9f6c0a175eb3be3138f7b42db514d8de68b44e0e4588aceab",
   "warnings": [
     "EST-EERZout: covers the whole globe, treated as an out-of-jurisdiction notice"
   ]

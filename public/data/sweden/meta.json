@@ -2,9 +2,9 @@
   "sourceId": "sweden",
   "sourceUrl": "https://daim.lfv.se/echarts/dronechart/data/uas_zones_ED318.json",
   "publishedAt": "2026-11-26",
-  "fetchedAt": "2026-11-27T13:52:02.775Z",
+  "fetchedAt": "2026-11-28T12:59:32.817Z",
   "zoneCount": 304,
-  "checksum": "4a6e978997da5bfae9c1a2f305ea30854bba9d2bcb7acfa6b3d312a4ab5ddad8",
+  "checksum": "547772d42951df7b5a1413b44f4011756526a832a5d8a08ab3f0f302ada972de",
   "warnings": [
     "SWE-ESU208: weekly time window is published but not modelled",
     "SWE-ESU209: mixed vertical references (AGL/AMSL)",
@@ -17,6 +17,6 @@
     "3 airspace areas outside Sweden were skipped",
     "6 airspace areas with a floor above 500 ft were skipped, as LFV's chart does",
     "237 airspace areas carry limits published above sea level",
-    "1 of 304 zones have already expired and will not be shown"
+    "4 of 304 zones have already expired and will not be shown"
   ]
 }
